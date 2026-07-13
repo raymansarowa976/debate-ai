@@ -7,25 +7,25 @@
 ### Issue 0.1: Configure Multi-Container Orchestration with Docker Compose
 *   **Description:** Initialize the project's base containerization layer to ensure environment parity across all components.
 *   **Acceptance Criteria:**
-    *   [ ] Create a `docker-compose.yml` file defining services for `web` (Django), `frontend` (Next.js), `db` (PostgreSQL), `redis` (Broker/Cache), and `celery_worker`.
-    *   [ ] Configure named Docker volumes for `pg_data` and Redis snapshots to ensure data persistence across container restarts.
-    *   [ ] Set up a service health check on the `db` container that blocks the `web` and `celery_worker` containers from launching until PostgreSQL is fully accepting connections.
+    *   [x] Create a `docker-compose.yml` file defining services for `web` (Django), `frontend` (Next.js), `db` (PostgreSQL), `redis` (Broker/Cache), and `celery_worker`.
+    *   [x] Configure named Docker volumes for `pg_data` and Redis snapshots to ensure data persistence across container restarts.
+    *   [x] Set up a service health check on the `db` container that blocks the `web` and `celery_worker` containers from launching until PostgreSQL is fully accepting connections.
 *   **Verification:** Run `docker compose up --build` and confirm all 5 services initialize cleanly, communicate over the shared network, and persist data.
 
 ### Issue 0.2: Configure Nginx Local Reverse Proxy for WSGI/ASGI Routing
 *   **Description:** Set up a local gateway using Nginx to handle routing splitting between traditional synchronous REST API paths, live asynchronous streaming connections, and frontend requests.
 *   **Acceptance Criteria:**
-    *   [ ] Create an Nginx configuration file routing traditional REST API paths (`/api/*`) to Gunicorn on the WSGI boundary.
-    *   [ ] Route WebSocket or Server-Sent Events stream paths (`/api/ws/*`) to Uvicorn on the ASGI boundary.
-    *   [ ] Route all remaining fallback traffic to the Next.js port.
+    *   [x] Create an Nginx configuration file routing traditional REST API paths (`/api/*`) to Gunicorn on the WSGI boundary.
+    *   [x] Route WebSocket or Server-Sent Events stream paths (`/api/ws/*`) to Uvicorn on the ASGI boundary.
+    *   [x] Route all remaining fallback traffic to the Next.js port.
 *   **Verification:** Assert that hitting local paths resolves correctly to the proper upstream application container without throwing network gateway errors.
 
 ### Issue 0.3: Establish Distributed Task Ingestion & Environment Architecture
 *   **Description:** Hook Django up to the Redis container broker for Celery scheduling and set up secure environment variable parsing.
 *   **Acceptance Criteria:**
-    *   [ ] Configure Django `settings.py` to target the Redis service container as the primary `CELERY_BROKER_URL`.
-    *   [ ] Establish identical, clean `.env.example` configurations across the frontend and backend boundaries.
-    *   [ ] Ensure all sensitive properties (OpenAI Keys, DB Credentials, Django Secret Key) are loaded securely at the process boundary using decoupled environment parsers.
+    *   [x] Configure Django `settings.py` to target the Redis service container as the primary `CELERY_BROKER_URL`.
+    *   [x] Establish identical, clean `.env.example` configurations across the frontend and backend boundaries.
+    *   [x] Ensure all sensitive properties (OpenAI Keys, DB Credentials, Django Secret Key) are loaded securely at the process boundary using decoupled environment parsers.
 *   **Verification:** Run a basic Celery diagnostic check command ensuring workers are visible, responding, and successfully listening to the Redis queue.
 
 ---
@@ -35,10 +35,10 @@
 ### Issue 1.1: Build Topic Ingestion, Sanitization, and Relational Schema Models
 *   **Description:** Set up the primary relational database schema tables alongside text verification logic for initializing new debate matches.
 *   **Acceptance Criteria:**
-    *   [ ] Implement PostgreSQL database schema tables for `User`, `Match`, `Round`, `Message`, and `Scorecard` with appropriate foreign key cascade paths.
-    *   [ ] Apply explicit indices on `match_id` and relational user identifiers.
-    *   [ ] Add backend input validations on the topic creation endpoint ensuring strings are non-empty, under 100 characters, and pass a basic automated text moderation check.
-    *   [ ] Instantiate a new `Match` record with an initial status of `INITIALIZED` and lock the format rules into the metadata upon setup.
+    *   [x] Implement PostgreSQL database schema tables for `User`, `Match`, `Round`, `Message`, and `Scorecard` with appropriate foreign key cascade paths.
+    *   [x] Apply explicit indices on `match_id` and relational user identifiers.
+    *   [x] Add backend input validations on the topic creation endpoint ensuring strings are non-empty, under 100 characters, and pass a basic automated text moderation check.
+    *   [x] Instantiate a new `Match` record with an initial status of `INITIALIZED` and lock the format rules into the metadata upon setup.
 *   **Verification:** Verify through Django migrations and admin tools that schemas build cleanly and throw validation errors when submitting non-compliant topics.
 
 ### Issue 1.2: Implement Turn-State Machine, Turn Lockout, and Content Guardrails
