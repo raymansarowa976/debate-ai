@@ -1,0 +1,79 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file: ./backend/.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: ./backend
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  asgi:
+    build: ./backend
+    command: uvicorn config.asgi:application --host 0.0.0.0 --port 8001
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build: ./backend
+    command: celery -A config worker -l info
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    env_file: ./frontend/.env
+    expose:
+      - "3000"
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - web
+      - asgi
+      - frontend
+
+volumes:
+  pg_data:
+  redis_data:
