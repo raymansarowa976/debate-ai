@@ -44,17 +44,17 @@
 ### Issue 1.2: Implement Turn-State Machine, Turn Lockout, and Content Guardrails
 *   **Description:** Enforce strict turn patterns between the user and the AI, blocking unlawful simultaneous post attempts.
 *   **Acceptance Criteria:**
-    *   [ ] Introduce an idempotent status flag tracking `USER_TURN` and `AI_TURN` states.
-    *   [ ] Build a backend permission guard or interceptor that blocks incoming user message posts and responds with an HTTP `409 Conflict` if the state is currently set to `AI_TURN`.
-    *   [ ] Implement text processors enforcing a strict minimum of 50 words and maximum of 500 words per turn.
+    *   [x] Introduce an idempotent status flag tracking `USER_TURN` and `AI_TURN` states.
+    *   [x] Build a backend permission guard or interceptor that blocks incoming user message posts and responds with an HTTP `409 Conflict` if the state is currently set to `AI_TURN`.
+    *   [x] Implement text processors enforcing a strict minimum of 50 words and maximum of 500 words per turn.
 *   **Verification:** Covered by **Test 4 (Backend)** and **Test 2 (Frontend)**. Assert 409 payloads return when hitting active locks, and check text length rejection flows.
 
 ### Issue 1.3: Build Frontend Input Locking & Skeleton UI States
 *   **Description:** Manage the UI user interface states to reflect active background processing safely.
 *   **Acceptance Criteria:**
-    *   [ ] Configure the Next.js debate panel to read the matching state engine variables.
-    *   [ ] When the state resolves to `AI_TURN`, programmatically apply the `disabled` attribute to the argument `<textarea>` and submit `<button>`.
-    *   [ ] Mount a clear visual skeleton text loader component inside the DOM during active background rendering.
+    *   [x] Configure the Next.js debate panel to read the matching state engine variables.
+    *   [x] When the state resolves to `AI_TURN`, programmatically apply the `disabled` attribute to the argument `<textarea>` and submit `<button>`.
+    *   [x] Mount a clear visual skeleton text loader component inside the DOM during active background rendering.
 *   **Verification:** Covered by **Test 1 (Frontend)**. Assert UI inputs lock completely when transitioning into processing states.
 
 ---
