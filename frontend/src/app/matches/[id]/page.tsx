@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DebatePanel } from "@/components/debate/DebatePanel";
@@ -8,6 +9,7 @@ import { fetchMatch, postArgument } from "@/lib/api/matches";
 export default function MatchPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
 
   const { data: match, isLoading, isError } = useQuery({
     queryKey: ["match", id],
@@ -16,7 +18,16 @@ export default function MatchPage() {
 
   const { mutate: submitArgument, isPending } = useMutation({
     mutationFn: (content: string) => postArgument(id, content),
+    onMutate: () => {
+      setError(null);
+    },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["match", id] });
+    },
+    onError: (mutationError: Error) => {
+      setError(mutationError.message);
+      // Our cached status may be stale (e.g. the match flipped to AI_TURN
+      // in another tab) - refetch so the UI locks against the real state.
       queryClient.invalidateQueries({ queryKey: ["match", id] });
     },
   });
@@ -40,6 +51,7 @@ export default function MatchPage() {
         topic={match.topic}
         onSubmitArgument={submitArgument}
         isSubmitting={isPending}
+        error={error}
       />
     </main>
   );

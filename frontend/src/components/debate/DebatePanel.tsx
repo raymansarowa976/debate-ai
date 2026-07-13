@@ -10,6 +10,7 @@ export interface DebatePanelProps {
   topic: string;
   onSubmitArgument: (text: string) => void;
   isSubmitting?: boolean;
+  error?: string | null;
 }
 
 export function DebatePanel({
@@ -17,6 +18,7 @@ export function DebatePanel({
   topic,
   onSubmitArgument,
   isSubmitting = false,
+  error = null,
 }: DebatePanelProps) {
   const [value, setValue] = useState("");
   const locked = status === "AI_TURN";
@@ -43,6 +45,15 @@ export function DebatePanel({
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
           <span className="sr-only">Waiting for AI response…</span>
+        </div>
+      )}
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+        >
+          {error}
         </div>
       )}
 
