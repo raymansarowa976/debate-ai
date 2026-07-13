@@ -12,6 +12,9 @@ class MatchStatus(models.TextChoices):
     COMPLETED = "COMPLETED", "Completed"
 
 
+OPEN_FOR_USER_TURN_STATUSES = {MatchStatus.INITIALIZED, MatchStatus.USER_TURN}
+
+
 class SenderType(models.TextChoices):
     USER = "USER", "User"
     AI = "AI", "AI"
