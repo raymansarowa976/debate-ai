@@ -76,4 +76,27 @@ describe("DebatePanel", () => {
     expect(screen.getByRole("textbox")).toBeDisabled();
     expect(screen.getByRole("button", { name: /submit/i })).toBeDisabled();
   });
+
+  it("renders the error message when error is provided", () => {
+    render(
+      <DebatePanel
+        status="USER_TURN"
+        topic="Should AI write laws?"
+        onSubmitArgument={vi.fn()}
+        error="It is not your turn. Wait for the AI's response."
+      />
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "It is not your turn. Wait for the AI's response."
+    );
+  });
+
+  it("does not render an error message when error is absent", () => {
+    render(
+      <DebatePanel status="USER_TURN" topic="Should AI write laws?" onSubmitArgument={vi.fn()} />
+    );
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
 });
