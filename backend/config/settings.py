@@ -115,6 +115,8 @@ REST_FRAMEWORK = {
     ],
 }
 
-# --- AI providers: read now, wired up by Epic 2/3 ---
+# --- AI providers ---
 OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
+OPENAI_MODEL = env("OPENAI_MODEL", default="gpt-4o-mini")
+OPENAI_TIMEOUT_SECONDS = 8
