@@ -64,9 +64,9 @@
 ### Issue 2.1: Architect AI Context Slicing Pipeline & Persona Enforcement
 *   **Description:** Build the background ingestion compiler that structures high-density prompt payloads for the AI adversary.
 *   **Acceptance Criteria:**
-    *   [ ] Build a backend context assembly utility that takes a raw debate thread transcript, generates a short rolling summary paragraph of old rounds, and attaches only the latest active user statement to limit token overhead.
-    *   [ ] Design an aggressive system prompt matrix that binds the LLM opponent to its designated stance, forcing it to resist middle-ground conciliation.
-    *   [ ] Attach an 8-second execution timeout guard onto the client request layer with a fallback system message return parameter if connections fail.
+    *   [x] Build a backend context assembly utility that takes a raw debate thread transcript, generates a short rolling summary paragraph of old rounds, and attaches only the latest active user statement to limit token overhead.
+    *   [x] Design an aggressive system prompt matrix that binds the LLM opponent to its designated stance, forcing it to resist middle-ground conciliation.
+    *   [x] Attach an 8-second execution timeout guard onto the client request layer with a fallback system message return parameter if connections fail.
 *   **Verification:** Inspect raw payload text sent to the LLM endpoint during test simulations to confirm context limits and summary composition.
 
 ---
