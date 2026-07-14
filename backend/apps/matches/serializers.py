@@ -6,7 +6,7 @@ from .models import Match, Message, Round
 class MatchCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
-        fields = ["id", "topic", "status", "created_at"]
+        fields = ["id", "topic", "user_stance", "status", "created_at"]
         read_only_fields = ["id", "status", "created_at"]
 
     def validate_topic(self, value):
@@ -54,7 +54,17 @@ class RoundSerializer(serializers.ModelSerializer):
 
 class MatchDetailSerializer(serializers.ModelSerializer):
     rounds = RoundSerializer(many=True, read_only=True)
+    ai_stance = serializers.CharField(read_only=True)
 
     class Meta:
         model = Match
-        fields = ["id", "topic", "status", "created_at", "updated_at", "rounds"]
+        fields = [
+            "id",
+            "topic",
+            "user_stance",
+            "ai_stance",
+            "status",
+            "created_at",
+            "updated_at",
+            "rounds",
+        ]

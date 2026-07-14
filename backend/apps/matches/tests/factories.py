@@ -1,7 +1,7 @@
 import factory
 from django.contrib.auth import get_user_model
 
-from apps.matches.models import Match, MatchStatus, Message, Round, SenderType
+from apps.matches.models import Match, MatchStatus, Message, Round, SenderType, Stance
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -19,6 +19,7 @@ class MatchFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     topic = factory.Sequence(lambda n: f"Topic {n}")
     status = MatchStatus.INITIALIZED
+    user_stance = Stance.FOR
 
 
 class RoundFactory(factory.django.DjangoModelFactory):
