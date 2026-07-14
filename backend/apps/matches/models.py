@@ -20,12 +20,18 @@ class SenderType(models.TextChoices):
     AI = "AI", "AI"
 
 
+class Stance(models.TextChoices):
+    FOR = "FOR", "For"
+    AGAINST = "AGAINST", "Against"
+
+
 class Match(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="matches"
     )
     topic = models.CharField(max_length=100)
+    user_stance = models.CharField(max_length=10, choices=Stance.choices)
     status = models.CharField(
         max_length=20, choices=MatchStatus.choices, default=MatchStatus.INITIALIZED
     )
@@ -38,6 +44,10 @@ class Match(models.Model):
 
     def __str__(self):
         return f"{self.topic} ({self.status})"
+
+    @property
+    def ai_stance(self) -> str:
+        return Stance.AGAINST if self.user_stance == Stance.FOR else Stance.FOR
 
 
 class Round(models.Model):
