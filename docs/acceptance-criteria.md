@@ -71,6 +71,28 @@
 
 ---
 
+#### [ ] Epic 2.1: Continuous Integration & Deployment (The Pipe)
+* [ ] **Automated Multi-Stage CI Pipeline:** Configured GitHub Actions workflow triggering on Pull Requests to `main`. It must orchestrate concurrent unit test execution (using Pytest-Django and Vitest) within isolated Docker runner environments.
+* [ ] **Dynamic Linting & Security Scans:** Integration of security linter tools (e.g., `bandit` for Python, `eslint` for Next.js) inside the CI step, blocking manual merge actions if security risks or style-breaking syntax are introduced.
+* [ ] **CD Image Publication Pipeline:** An automated deployment workflow triggering upon pushes to `main` that builds verified production-optimized Docker images, publishes them to GitHub Packages (GHCR), and triggers automated rolling container updates on the remote host.
+
+#### [ ] Epic 2.2: Dual-Layer Secure Session Authentication (The Guard)
+* [ ] **Django Session Authentication Interface:** Secure cookie-based session management (`SessionAuthentication`) integrated within the Django backend, enforcing HTTP-only, Secure, and SameSite cookie policies to shield user profiles.
+* [ ] **NextAuth.js Integration Layer:** A configured authentication provider layer in Next.js managing persistent user profiles, token encryption keys, and client login routes.
+* [ ] **Auth-Protected Dynamic Routing:** A centralized API and page router security boundary blocking unauthenticated requests from loading private match lobbies, redirecting guests to landing splash views.
+
+---
+
+### Associated Automated Tests
+
+#### Frontend Component & Integration Tests (Vitest)
+* [ ] **Test 3.1: Frontend Unauthenticated Route Guard Check**
+    * *Assertion:* Attempt to load private paths (e.g., `/dashboard/match-lobby`) with an unauthenticated session state. Assert that NextAuth intercepts the request and issues a route redirect back to `/login`.
+
+#### Backend API & State Machine Tests (pytest)
+* [ ] **Test 8: Backend Cookie Security and CSRF Verification**
+    * *Assertion:* Attempt to issue a profile modification `POST` request to the backend without submitting a valid CSRF token in the headers. Verify that the backend rejects the connection request with a `403 Forbidden` response.
+
 ## Epic 3: Asynchronous Evaluation Pipeline (The Judge)
 
 ### Issue 3.1: Build Non-Blocking Celery Evaluation Endpoint
