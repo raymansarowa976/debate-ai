@@ -76,9 +76,9 @@
 ### Issue 3.1: Build Non-Blocking Celery Evaluation Endpoint
 *   **Description:** Setup the transaction handoff that moves heavy evaluation tasks out of the synchronous server request loop.
 *   **Acceptance Criteria:**
-    *   [ ] Create a dedicated post-debate submission route in Django REST Framework.
-    *   [ ] Upon capturing the final closing text chunk, transactionally switch the match status to `EVALUATING`.
-    *   [ ] Instantly drop a serialized task event message down to the Celery worker queue via Redis and return an HTTP `202 Accepted` response back to the client within 200ms.
+    *   [x] Create a dedicated post-debate submission route in Django REST Framework.
+    *   [x] Upon capturing the final closing text chunk, transactionally switch the match status to `EVALUATING`.
+    *   [x] Instantly drop a serialized task event message down to the Celery worker queue via Redis and return an HTTP `202 Accepted` response back to the client within 200ms.
 *   **Verification:** Covered by **Test 5 (Backend)**. Assert instant HTTP 202 validation loops run without holding server execution threads open.
 
 ### Issue 3.2: Implement Pydantic Evaluation Schema Validation & Retry Handlers
