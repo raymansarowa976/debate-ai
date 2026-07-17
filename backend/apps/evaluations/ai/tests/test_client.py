@@ -8,7 +8,7 @@ def _payload():
     return ContextPayload(
         topic="Should AI write laws?",
         ai_stance="AGAINST",
-        rolling_summary="Round 1 — User argued: \"yes\" — AI argued: \"no\".",
+        rolling_summary='Round 1 — User argued: "yes" — AI argued: "no".',
         latest_statement="AI should never write binding law.",
     )
 
@@ -22,7 +22,9 @@ def _mock_response(content):
 @patch("apps.evaluations.ai.client.OpenAI")
 def test_returns_the_model_reply_on_success(mock_openai_cls):
     mock_client = MagicMock()
-    mock_client.chat.completions.create.return_value = _mock_response("Nice try, but no.")
+    mock_client.chat.completions.create.return_value = _mock_response(
+        "Nice try, but no."
+    )
     mock_openai_cls.return_value = mock_client
 
     reply = generate_opponent_reply("system prompt text", _payload())
@@ -53,7 +55,10 @@ def test_request_payload_contains_the_system_prompt_and_context(mock_openai_cls)
 
     _, kwargs = mock_client.chat.completions.create.call_args
     messages = kwargs["messages"]
-    assert messages[0] == {"role": "system", "content": "You must argue AGAINST the topic."}
+    assert messages[0] == {
+        "role": "system",
+        "content": "You must argue AGAINST the topic.",
+    }
     assert payload.rolling_summary in messages[1]["content"]
     assert payload.latest_statement in messages[1]["content"]
 
@@ -61,7 +66,9 @@ def test_request_payload_contains_the_system_prompt_and_context(mock_openai_cls)
 @patch("apps.evaluations.ai.client.OpenAI")
 def test_returns_fallback_message_when_the_call_fails(mock_openai_cls):
     mock_client = MagicMock()
-    mock_client.chat.completions.create.side_effect = TimeoutError("connection timed out")
+    mock_client.chat.completions.create.side_effect = TimeoutError(
+        "connection timed out"
+    )
     mock_openai_cls.return_value = mock_client
 
     reply = generate_opponent_reply("system prompt text", _payload())

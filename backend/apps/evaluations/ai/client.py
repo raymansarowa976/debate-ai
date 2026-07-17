@@ -25,7 +25,9 @@ def generate_opponent_reply(system_prompt: str, context_payload: ContextPayload)
             messages=messages,
         )
     except Exception:
-        logger.warning("Opponent LLM call failed; returning fallback message.", exc_info=True)
+        logger.warning(
+            "Opponent LLM call failed; returning fallback message.", exc_info=True
+        )
         return FALLBACK_MESSAGE
 
     return response.choices[0].message.content

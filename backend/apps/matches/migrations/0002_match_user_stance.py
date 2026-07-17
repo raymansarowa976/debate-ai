@@ -6,14 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0001_initial'),
+        ("matches", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='match',
-            name='user_stance',
-            field=models.CharField(choices=[('FOR', 'For'), ('AGAINST', 'Against')], default='FOR', max_length=10),
+            model_name="match",
+            name="user_stance",
+            field=models.CharField(
+                choices=[("FOR", "For"), ("AGAINST", "Against")],
+                default="FOR",
+                max_length=10,
+            ),
             preserve_default=False,
         ),
     ]

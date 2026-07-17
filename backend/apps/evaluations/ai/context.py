@@ -22,7 +22,9 @@ def build_context_payload(match) -> ContextPayload:
     excluded_round_id = latest_user_message.round_id if latest_user_message else None
 
     old_rounds = [
-        round_obj for round_obj in match.rounds.all() if round_obj.id != excluded_round_id
+        round_obj
+        for round_obj in match.rounds.all()
+        if round_obj.id != excluded_round_id
     ]
     old_rounds = old_rounds[-MAX_SUMMARIZED_ROUNDS:]
 
@@ -37,7 +39,9 @@ def build_context_payload(match) -> ContextPayload:
 
 
 def _summarize_round(round_obj) -> str:
-    messages_by_sender = {message.sender: message for message in round_obj.messages.all()}
+    messages_by_sender = {
+        message.sender: message for message in round_obj.messages.all()
+    }
     parts = [f"Round {round_obj.round_number}"]
 
     user_message = messages_by_sender.get(SenderType.USER)

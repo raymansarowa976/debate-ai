@@ -11,8 +11,12 @@ def detail_url(match_id):
     return reverse("match-detail", kwargs={"match_id": match_id})
 
 
-def test_retrieve_match_returns_status_topic_and_nested_rounds_and_messages(auth_client, user):
-    match = MatchFactory(user=user, status=MatchStatus.AI_TURN, topic="Should AI write laws?")
+def test_retrieve_match_returns_status_topic_and_nested_rounds_and_messages(
+    auth_client, user
+):
+    match = MatchFactory(
+        user=user, status=MatchStatus.AI_TURN, topic="Should AI write laws?"
+    )
     round_obj = RoundFactory(match=match, round_number=1)
     MessageFactory(round=round_obj, match=match)
 
@@ -25,7 +29,9 @@ def test_retrieve_match_returns_status_topic_and_nested_rounds_and_messages(auth
     assert len(response.data["rounds"][0]["messages"]) == 1
 
 
-def test_retrieve_match_returns_empty_rounds_list_when_no_messages_yet(auth_client, user):
+def test_retrieve_match_returns_empty_rounds_list_when_no_messages_yet(
+    auth_client, user
+):
     match = MatchFactory(user=user)
 
     response = auth_client.get(detail_url(match.id))

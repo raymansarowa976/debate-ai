@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from django.urls import reverse
 
-from apps.matches.models import Match, MatchStatus, Message, Round, SenderType
+from apps.matches.models import MatchStatus, Message, Round, SenderType
 from apps.matches.tests.factories import MatchFactory, RoundFactory
 
 pytestmark = pytest.mark.django_db
