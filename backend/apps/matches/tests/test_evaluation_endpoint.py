@@ -36,7 +36,9 @@ def test_post_evaluate_when_initialized_transitions_to_evaluating_creates_round_
     assert Round.objects.filter(match=match).count() == 1
     round_obj = Round.objects.get(match=match)
     assert (
-        Message.objects.filter(match=match, round=round_obj, sender=SenderType.USER).count()
+        Message.objects.filter(
+            match=match, round=round_obj, sender=SenderType.USER
+        ).count()
         == 1
     )
     mock_delay.assert_called_once_with(str(match.id))
@@ -58,7 +60,9 @@ def test_post_evaluate_when_user_turn_opens_final_round(auth_client, user):
 @pytest.mark.parametrize(
     "status", [MatchStatus.AI_TURN, MatchStatus.EVALUATING, MatchStatus.COMPLETED]
 )
-def test_post_evaluate_returns_409_when_not_open_for_user_turn(auth_client, user, status):
+def test_post_evaluate_returns_409_when_not_open_for_user_turn(
+    auth_client, user, status
+):
     match = MatchFactory(user=user, status=status)
 
     with patch(TASK_DELAY_TARGET) as mock_delay:
@@ -154,7 +158,9 @@ def test_post_evaluate_forces_sender_to_user_regardless_of_payload(auth_client, 
     assert message.sender == SenderType.USER
 
 
-def test_post_evaluate_dispatches_task_with_json_serializable_match_id(auth_client, user):
+def test_post_evaluate_dispatches_task_with_json_serializable_match_id(
+    auth_client, user
+):
     match = MatchFactory(user=user, status=MatchStatus.INITIALIZED)
 
     with patch(TASK_DELAY_TARGET) as mock_delay:
@@ -165,7 +171,9 @@ def test_post_evaluate_dispatches_task_with_json_serializable_match_id(auth_clie
     assert isinstance(args[0], str)
 
 
-def test_post_evaluate_returns_202_promptly_without_blocking_on_task_execution(auth_client, user):
+def test_post_evaluate_returns_202_promptly_without_blocking_on_task_execution(
+    auth_client, user
+):
     match = MatchFactory(user=user, status=MatchStatus.INITIALIZED)
 
     with patch(TASK_DELAY_TARGET) as mock_delay:
