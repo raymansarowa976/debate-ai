@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 
-from apps.matches.models import Match, MatchStatus, Message, Round, SenderType
+from apps.matches.models import MatchStatus, Message, Round, SenderType
 from apps.matches.tests.factories import MatchFactory, RoundFactory
 
 pytestmark = pytest.mark.django_db
@@ -28,7 +28,12 @@ def test_post_message_when_initialized_transitions_to_ai_turn_and_creates_round_
     assert Round.objects.filter(match=match).count() == 1
     round_obj = Round.objects.get(match=match)
     assert round_obj.round_number == 1
-    assert Message.objects.filter(match=match, round=round_obj, sender=SenderType.USER).count() == 1
+    assert (
+        Message.objects.filter(
+            match=match, round=round_obj, sender=SenderType.USER
+        ).count()
+        == 1
+    )
 
 
 def test_post_message_when_user_turn_opens_next_round_number(auth_client, user):
@@ -42,8 +47,12 @@ def test_post_message_when_user_turn_opens_next_round_number(auth_client, user):
     assert Message.objects.filter(round=new_round).exists()
 
 
-@pytest.mark.parametrize("status", [MatchStatus.AI_TURN, MatchStatus.EVALUATING, MatchStatus.COMPLETED])
-def test_post_message_returns_409_when_not_open_for_user_turn(auth_client, user, status):
+@pytest.mark.parametrize(
+    "status", [MatchStatus.AI_TURN, MatchStatus.EVALUATING, MatchStatus.COMPLETED]
+)
+def test_post_message_returns_409_when_not_open_for_user_turn(
+    auth_client, user, status
+):
     match = MatchFactory(user=user, status=status)
 
     response = auth_client.post(message_url(match.id), {"content": words(60)})

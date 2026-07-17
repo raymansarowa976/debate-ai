@@ -10,7 +10,9 @@ class WinnerChoice(models.TextChoices):
 
 
 class Scorecard(models.Model):
-    match = models.OneToOneField(Match, on_delete=models.CASCADE, related_name="scorecard")
+    match = models.OneToOneField(
+        Match, on_delete=models.CASCADE, related_name="scorecard"
+    )
     logic_score = models.FloatField(null=True, blank=True)
     evidence_score = models.FloatField(null=True, blank=True)
     rhetoric_score = models.FloatField(null=True, blank=True)

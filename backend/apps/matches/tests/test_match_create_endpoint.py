@@ -47,6 +47,8 @@ def test_create_match_rejects_invalid_stance(auth_client):
 
 
 def test_create_match_requires_stance(auth_client):
-    response = auth_client.post(reverse("match-create"), {"topic": "Should AI write laws?"})
+    response = auth_client.post(
+        reverse("match-create"), {"topic": "Should AI write laws?"}
+    )
 
     assert response.status_code == 400
