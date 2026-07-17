@@ -72,9 +72,9 @@
 ---
 
 #### [ ] Epic 2.1: Continuous Integration & Deployment (The Pipe)
-* [ ] **Automated Multi-Stage CI Pipeline:** Configured GitHub Actions workflow triggering on Pull Requests to `main`. It must orchestrate concurrent unit test execution (using Pytest-Django and Vitest) within isolated Docker runner environments.
+* [ ] **Automated Multi-Stage CI Pipeline:** Configured GitHub Actions workflow triggering on Pull Requests to `dev`. It must orchestrate concurrent unit test execution (using Pytest-Django and Vitest) within isolated Docker runner environments.
 * [ ] **Dynamic Linting & Security Scans:** Integration of security linter tools (e.g., `bandit` for Python, `eslint` for Next.js) inside the CI step, blocking manual merge actions if security risks or style-breaking syntax are introduced.
-* [ ] **CD Image Publication Pipeline:** An automated deployment workflow triggering upon pushes to `main` that builds verified production-optimized Docker images, publishes them to GitHub Packages (GHCR), and triggers automated rolling container updates on the remote host.
+* [ ] **CD Image Publication Pipeline:** An automated deployment workflow triggering upon pushes to `dev` that builds verified production-optimized Docker images, publishes them to GitHub Packages (GHCR), and triggers automated rolling container updates on the remote host.
 
 #### [ ] Epic 2.2: Dual-Layer Secure Session Authentication (The Guard)
 * [ ] **Django Session Authentication Interface:** Secure cookie-based session management (`SessionAuthentication`) integrated within the Django backend, enforcing HTTP-only, Secure, and SameSite cookie policies to shield user profiles.
