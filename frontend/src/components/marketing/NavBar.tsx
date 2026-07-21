@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCurrentUser } from "@/lib/api/auth";
+import { NavAuthActions } from "./NavAuthActions";
 
 export function NavBar() {
+  const { data: user } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: fetchCurrentUser,
+  });
+
   return (
     <header className="flex items-center justify-between px-6 py-5 lg:px-16">
       <Link href="/" className="flex items-center gap-2">
@@ -20,9 +29,7 @@ export function NavBar() {
         </a>
       </nav>
 
-      <Button size="default" className="rounded-full px-5">
-        Start a Debate
-      </Button>
+      <NavAuthActions user={user} />
     </header>
   );
 }
