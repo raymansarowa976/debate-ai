@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "./PasswordInput";
 
 export interface LoginFormValues {
   identifier: string;
@@ -56,12 +57,12 @@ export function LoginForm({ onSubmit, isSubmitting = false, error = null }: Logi
         <label htmlFor="login-password" className="text-sm font-medium">
           Password
         </label>
-        <input
+        <PasswordInput
           id="login-password"
-          type="password"
+          toggleLabel="password"
           className={inputClassName}
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={setPassword}
           disabled={isSubmitting}
           autoComplete="current-password"
         />

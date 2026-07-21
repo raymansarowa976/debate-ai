@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getPasswordRequirements, getUsernameRequirements } from "@/lib/validation/auth";
+import { PasswordInput } from "./PasswordInput";
 import { RequirementChecklist } from "./RequirementChecklist";
 
 export interface RegisterFormValues {
@@ -87,12 +88,12 @@ export function RegisterForm({
         <label htmlFor="register-password" className="text-sm font-medium">
           Password
         </label>
-        <input
+        <PasswordInput
           id="register-password"
-          type="password"
+          toggleLabel="password"
           className={inputClassName}
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={setPassword}
           disabled={isSubmitting}
           autoComplete="new-password"
         />
@@ -106,12 +107,12 @@ export function RegisterForm({
         <label htmlFor="register-confirm-password" className="text-sm font-medium">
           Confirm Password
         </label>
-        <input
+        <PasswordInput
           id="register-confirm-password"
-          type="password"
+          toggleLabel="confirm password"
           className={inputClassName}
           value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
+          onChange={setConfirmPassword}
           disabled={isSubmitting}
           autoComplete="new-password"
         />
