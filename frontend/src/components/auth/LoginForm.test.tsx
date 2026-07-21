@@ -32,6 +32,18 @@ describe("LoginForm", () => {
     expect(screen.getByLabelText(/username or email/i)).toBeDisabled();
     expect(screen.getByLabelText(/^password$/i)).toBeDisabled();
     expect(screen.getByRole("button", { name: /log in/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Show password" })).toBeDisabled();
+  });
+
+  it("reveals the password field as plain text when its toggle is clicked", async () => {
+    const user = userEvent.setup();
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    expect(screen.getByLabelText(/^password$/i)).toHaveAttribute("type", "password");
+
+    await user.click(screen.getByRole("button", { name: "Show password" }));
+
+    expect(screen.getByLabelText(/^password$/i)).toHaveAttribute("type", "text");
   });
 
   it("renders the error message when error is provided", () => {

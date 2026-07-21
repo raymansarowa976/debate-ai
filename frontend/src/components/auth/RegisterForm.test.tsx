@@ -59,7 +59,7 @@ describe("RegisterForm", () => {
     await user.type(screen.getByLabelText(/^username$/i), "debater99");
     await user.type(screen.getByLabelText(/email/i), "debater99@example.com");
     await user.type(screen.getByLabelText(/^password$/i), "Val1d!Pass");
-    await user.type(screen.getByLabelText(/confirm password/i), "Val1d!Pass");
+    await user.type(screen.getByLabelText(/^confirm password$/i), "Val1d!Pass");
     await user.click(screen.getByRole("button", { name: /create account/i }));
 
     expect(onSubmit).toHaveBeenCalledWith({
@@ -75,14 +75,43 @@ describe("RegisterForm", () => {
     expect(screen.getByLabelText(/^username$/i)).toBeDisabled();
     expect(screen.getByLabelText(/email/i)).toBeDisabled();
     expect(screen.getByLabelText(/^password$/i)).toBeDisabled();
-    expect(screen.getByLabelText(/confirm password/i)).toBeDisabled();
+    expect(screen.getByLabelText(/^confirm password$/i)).toBeDisabled();
     expect(screen.getByRole("button", { name: /create account/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Show password" })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Show confirm password" })
+    ).toBeDisabled();
+  });
+
+  it("reveals the password field as plain text when its toggle is clicked", async () => {
+    const user = userEvent.setup();
+    render(<RegisterForm onSubmit={vi.fn()} />);
+
+    expect(screen.getByLabelText(/^password$/i)).toHaveAttribute("type", "password");
+
+    await user.click(screen.getByRole("button", { name: "Show password" }));
+
+    expect(screen.getByLabelText(/^password$/i)).toHaveAttribute("type", "text");
+  });
+
+  it("reveals the confirm password field as plain text when its toggle is clicked", async () => {
+    const user = userEvent.setup();
+    render(<RegisterForm onSubmit={vi.fn()} />);
+
+    expect(screen.getByLabelText(/^confirm password$/i)).toHaveAttribute(
+      "type",
+      "password"
+    );
+
+    await user.click(screen.getByRole("button", { name: "Show confirm password" }));
+
+    expect(screen.getByLabelText(/^confirm password$/i)).toHaveAttribute("type", "text");
   });
 
   it("renders a confirm password field", () => {
     render(<RegisterForm onSubmit={vi.fn()} />);
 
-    expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^confirm password$/i)).toBeInTheDocument();
   });
 
   it("shows no match feedback when confirm password is empty", async () => {
@@ -100,7 +129,7 @@ describe("RegisterForm", () => {
     render(<RegisterForm onSubmit={vi.fn()} />);
 
     await user.type(screen.getByLabelText(/^password$/i), "Val1d!Pass");
-    await user.type(screen.getByLabelText(/confirm password/i), "Val1d!Pas");
+    await user.type(screen.getByLabelText(/^confirm password$/i), "Val1d!Pas");
 
     expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
   });
@@ -110,7 +139,7 @@ describe("RegisterForm", () => {
     render(<RegisterForm onSubmit={vi.fn()} />);
 
     await user.type(screen.getByLabelText(/^password$/i), "Val1d!Pass");
-    await user.type(screen.getByLabelText(/confirm password/i), "Val1d!Pass");
+    await user.type(screen.getByLabelText(/^confirm password$/i), "Val1d!Pass");
 
     expect(screen.getByText(/^passwords match$/i)).toBeInTheDocument();
   });
@@ -123,7 +152,7 @@ describe("RegisterForm", () => {
     await user.type(screen.getByLabelText(/^username$/i), "debater99");
     await user.type(screen.getByLabelText(/email/i), "debater99@example.com");
     await user.type(screen.getByLabelText(/^password$/i), "Val1d!Pass");
-    await user.type(screen.getByLabelText(/confirm password/i), "somethingElse1!");
+    await user.type(screen.getByLabelText(/^confirm password$/i), "somethingElse1!");
     await user.click(screen.getByRole("button", { name: /create account/i }));
 
     expect(onSubmit).not.toHaveBeenCalled();
