@@ -28,9 +28,13 @@ export function RegisterForm({
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const passwordsMatch = confirmPassword.length > 0 ? password === confirmPassword : null;
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (password !== confirmPassword) return;
     onSubmit({ username, email, password });
   }
 
@@ -96,6 +100,30 @@ export function RegisterForm({
           ariaLabel="Password requirements"
           requirements={getPasswordRequirements(password)}
         />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="register-confirm-password" className="text-sm font-medium">
+          Confirm Password
+        </label>
+        <input
+          id="register-confirm-password"
+          type="password"
+          className={inputClassName}
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          disabled={isSubmitting}
+          autoComplete="new-password"
+        />
+        {passwordsMatch !== null && (
+          <p
+            className={
+              passwordsMatch ? "text-xs text-primary" : "text-xs text-destructive"
+            }
+          >
+            {passwordsMatch ? "Passwords match" : "Passwords do not match"}
+          </p>
+        )}
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
