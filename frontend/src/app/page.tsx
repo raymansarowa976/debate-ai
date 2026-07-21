@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { NavBar } from "@/components/marketing/NavBar";
+import { HeroActions } from "@/components/marketing/HeroActions";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 
 export default function Home() {
@@ -22,14 +22,7 @@ export default function Home() {
             multi-round debate — then an independent AI judge scores logic,
             evidence, rhetoric, and adherence to declare a winner.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button size="lg" className="rounded-full px-6">
-              Start a Debate
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-6" asChild>
-              <a href="#how-it-works">How it Works</a>
-            </Button>
-          </div>
+          <HeroActions />
         </div>
 
         <HeroVisual />
