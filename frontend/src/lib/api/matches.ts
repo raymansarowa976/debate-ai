@@ -1,3 +1,5 @@
+import { csrfHeaders } from "./csrf";
+
 export type MatchStatus =
   | "INITIALIZED"
   | "USER_TURN"
@@ -27,11 +29,6 @@ export interface MatchDetail {
   rounds: RoundDTO[];
 }
 
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 export async function fetchMatch(matchId: string): Promise<MatchDetail> {
   const res = await fetch(`/api/matches/${matchId}/`, { credentials: "include" });
   if (!res.ok) throw new Error(`Failed to load match (${res.status})`);
@@ -43,7 +40,7 @@ export async function postArgument(matchId: string, content: string): Promise<Me
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": getCookie("csrftoken") ?? "",
+      ...csrfHeaders(),
     },
     credentials: "include",
     body: JSON.stringify({ content }),
