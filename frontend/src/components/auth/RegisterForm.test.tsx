@@ -7,7 +7,7 @@ describe("RegisterForm", () => {
   it("renders username, email, and password fields", () => {
     render(<RegisterForm onSubmit={vi.fn()} />);
 
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^username$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
   });
@@ -34,10 +34,10 @@ describe("RegisterForm", () => {
 
     const progress = screen.getByRole("progressbar", { name: /username requirements/i });
 
-    await user.type(screen.getByLabelText(/username/i), "ab");
+    await user.type(screen.getByLabelText(/^username$/i), "ab");
     expect(progress).toHaveAttribute("aria-valuenow", "0");
 
-    await user.type(screen.getByLabelText(/username/i), "c");
+    await user.type(screen.getByLabelText(/^username$/i), "c");
     expect(progress).toHaveAttribute("aria-valuenow", "1");
   });
 
@@ -56,7 +56,7 @@ describe("RegisterForm", () => {
     const onSubmit = vi.fn();
     render(<RegisterForm onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/username/i), "debater99");
+    await user.type(screen.getByLabelText(/^username$/i), "debater99");
     await user.type(screen.getByLabelText(/email/i), "debater99@example.com");
     await user.type(screen.getByLabelText(/^password$/i), "Val1d!Pass");
     await user.click(screen.getByRole("button", { name: /create account/i }));
@@ -71,7 +71,7 @@ describe("RegisterForm", () => {
   it("disables the fields and submit button while isSubmitting is true", () => {
     render(<RegisterForm onSubmit={vi.fn()} isSubmitting />);
 
-    expect(screen.getByLabelText(/username/i)).toBeDisabled();
+    expect(screen.getByLabelText(/^username$/i)).toBeDisabled();
     expect(screen.getByLabelText(/email/i)).toBeDisabled();
     expect(screen.getByLabelText(/^password$/i)).toBeDisabled();
     expect(screen.getByRole("button", { name: /create account/i })).toBeDisabled();
