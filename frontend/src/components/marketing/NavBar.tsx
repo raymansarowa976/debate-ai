@@ -1,14 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCurrentUser } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCurrentUser, logoutUser } from "@/lib/api/auth";
 import { NavAuthActions } from "./NavAuthActions";
 
 export function NavBar() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: fetchCurrentUser,
+  });
+
+  const { mutate: logOut, isPending: isLoggingOut } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      queryClient.setQueryData(["currentUser"], null);
+      router.push("/");
+    },
   });
 
   return (
@@ -29,7 +40,7 @@ export function NavBar() {
         </a>
       </nav>
 
-      <NavAuthActions user={user} />
+      <NavAuthActions user={user} onLogout={logOut} isLoggingOut={isLoggingOut} />
     </header>
   );
 }
