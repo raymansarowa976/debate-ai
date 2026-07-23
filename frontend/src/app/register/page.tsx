@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { registerUser } from "@/lib/api/auth";
 
@@ -23,18 +24,21 @@ export default function RegisterPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-sm flex-1 px-6 py-16">
-      <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link href="/login" className="text-foreground underline underline-offset-4">
-          Log in
-        </Link>
-      </p>
-
-      <div className="mt-8">
-        <RegisterForm onSubmit={submitRegistration} isSubmitting={isPending} error={error} />
-      </div>
-    </main>
+    <AuthLayout
+      title="Create your account"
+      subtitle={
+        <>
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            Log in
+          </Link>
+        </>
+      }
+    >
+      <RegisterForm onSubmit={submitRegistration} isSubmitting={isPending} error={error} />
+    </AuthLayout>
   );
 }

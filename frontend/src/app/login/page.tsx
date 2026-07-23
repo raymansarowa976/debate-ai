@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { loginUser } from "@/lib/api/auth";
 
@@ -23,18 +24,21 @@ export default function LoginPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-sm flex-1 px-6 py-16">
-      <h1 className="text-2xl font-semibold tracking-tight">Log in</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-foreground underline underline-offset-4">
-          Create one
-        </Link>
-      </p>
-
-      <div className="mt-8">
-        <LoginForm onSubmit={submitLogin} isSubmitting={isPending} error={error} />
-      </div>
-    </main>
+    <AuthLayout
+      title="Welcome back"
+      subtitle={
+        <>
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-foreground underline underline-offset-4"
+          >
+            Create one
+          </Link>
+        </>
+      }
+    >
+      <LoginForm onSubmit={submitLogin} isSubmitting={isPending} error={error} />
+    </AuthLayout>
   );
 }
