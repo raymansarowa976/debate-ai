@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { NavAuthActions } from "./NavAuthActions";
 
 const loggedInUser = { id: 1, username: "debater", email: "debater@example.com" };
@@ -43,5 +44,33 @@ describe("NavAuthActions", () => {
 
     expect(screen.queryByRole("link", { name: /sign up/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /sign in/i })).not.toBeInTheDocument();
+  });
+
+  it("renders the Log Out button when signed in", () => {
+    render(<NavAuthActions user={loggedInUser} />);
+
+    expect(screen.getByRole("button", { name: /log out/i })).toBeInTheDocument();
+  });
+
+  it("does not render the Log Out button when signed out", () => {
+    render(<NavAuthActions user={null} />);
+
+    expect(screen.queryByRole("button", { name: /log out/i })).not.toBeInTheDocument();
+  });
+
+  it("calls onLogout when the Log Out button is clicked", async () => {
+    const user = userEvent.setup();
+    const onLogout = vi.fn();
+    render(<NavAuthActions user={loggedInUser} onLogout={onLogout} />);
+
+    await user.click(screen.getByRole("button", { name: /log out/i }));
+
+    expect(onLogout).toHaveBeenCalledOnce();
+  });
+
+  it("disables the Log Out button while isLoggingOut is true", () => {
+    render(<NavAuthActions user={loggedInUser} isLoggingOut />);
+
+    expect(screen.getByRole("button", { name: /log out/i })).toBeDisabled();
   });
 });
