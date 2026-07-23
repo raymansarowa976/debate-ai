@@ -76,10 +76,10 @@
 * [x] **Dynamic Linting & Security Scans:** Integration of security linter tools (e.g., `bandit` for Python, `eslint` for Next.js) inside the CI step, blocking manual merge actions if security risks or style-breaking syntax are introduced.
 * [x] **CD Image Publication Pipeline:** An automated deployment workflow triggering upon pushes to `dev` that builds verified production-optimized Docker images, publishes them to GitHub Packages (GHCR), and triggers automated rolling container updates on the remote host.
 
-#### [ ] Epic 2.2: Dual-Layer Secure Session Authentication (The Guard)
-* [ ] **Django Session Authentication Interface:** Secure cookie-based session management (`SessionAuthentication`) integrated within the Django backend, enforcing HTTP-only, Secure, and SameSite cookie policies to shield user profiles.
-* [ ] **NextAuth.js Integration Layer:** A configured authentication provider layer in Next.js managing persistent user profiles, token encryption keys, and client login routes.
-* [ ] **Auth-Protected Dynamic Routing:** A centralized API and page router security boundary blocking unauthenticated requests from loading private match lobbies, redirecting guests to landing splash views.
+#### [x] Epic 2.2: Dual-Layer Secure Session Authentication (The Guard)
+* [x] **Django Session Authentication Interface:** Secure cookie-based session management (`SessionAuthentication`) integrated within the Django backend, enforcing HTTP-only, Secure, and SameSite cookie policies to shield user profiles.
+* [x] **NextAuth.js Integration Layer:** A configured authentication provider layer in Next.js managing persistent user profiles, token encryption keys, and client login routes.
+* [x] **Auth-Protected Dynamic Routing:** A centralized API and page router security boundary blocking unauthenticated requests from loading private match lobbies, redirecting guests to landing splash views.
 
 ---
 
