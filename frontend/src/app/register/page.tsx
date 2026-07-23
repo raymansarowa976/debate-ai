@@ -26,6 +26,7 @@ export default function RegisterPage() {
   return (
     <AuthLayout
       title="Create your account"
+      background="transcript"
       subtitle={
         <>
           Already have an account?{" "}

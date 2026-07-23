@@ -26,6 +26,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Welcome back"
+      background="bubbles"
       subtitle={
         <>
           Don&apos;t have an account?{" "}

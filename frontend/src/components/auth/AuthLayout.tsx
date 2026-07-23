@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
+import { ArgumentBubblesBackground, TranscriptTextureBackground } from "./AuthBackground";
 
 const FEATURES = [
   "Debate an AI across structured, multi-round matches",
@@ -11,9 +12,17 @@ export interface AuthLayoutProps {
   title: string;
   subtitle: React.ReactNode;
   children: React.ReactNode;
+  background: "bubbles" | "transcript";
 }
 
-export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
+const BACKGROUNDS = {
+  bubbles: ArgumentBubblesBackground,
+  transcript: TranscriptTextureBackground,
+};
+
+export function AuthLayout({ title, subtitle, children, background }: AuthLayoutProps) {
+  const Background = BACKGROUNDS[background];
+
   return (
     <div className="flex flex-1 flex-col lg:flex-row">
       <div className="relative hidden flex-col justify-between overflow-hidden bg-foreground px-12 py-12 text-background lg:flex lg:w-1/2 xl:px-16">
@@ -45,8 +54,10 @@ export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
         </p>
       </div>
 
-      <div className="flex w-full flex-1 flex-col items-center justify-center bg-gray-400 px-6 py-16 lg:w-1/2">
-        <div className="w-full max-w-sm">
+      <div className="relative flex w-full flex-1 flex-col items-center justify-center overflow-hidden bg-neutral-200 px-6 py-16 dark:bg-neutral-900 lg:w-1/2">
+        <Background />
+
+        <div className="relative z-10 w-full max-w-sm">
           <Link href="/" className="mb-8 flex items-center gap-2 lg:hidden">
             <span className="flex size-6 items-center justify-center rounded-sm bg-foreground text-xs font-bold text-background">
               D
