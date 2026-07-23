@@ -1,7 +1,27 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCurrentUser, logoutUser } from "@/lib/api/auth";
+import { NavAuthActions } from "./NavAuthActions";
 
 export function NavBar() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: user } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: fetchCurrentUser,
+  });
+
+  const { mutate: logOut, isPending: isLoggingOut } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      queryClient.setQueryData(["currentUser"], null);
+      router.push("/");
+    },
+  });
+
   return (
     <header className="flex items-center justify-between px-6 py-5 lg:px-16">
       <Link href="/" className="flex items-center gap-2">
@@ -20,9 +40,7 @@ export function NavBar() {
         </a>
       </nav>
 
-      <Button size="default" className="rounded-full px-5">
-        Start a Debate
-      </Button>
+      <NavAuthActions user={user} onLogout={logOut} isLoggingOut={isLoggingOut} />
     </header>
   );
 }
