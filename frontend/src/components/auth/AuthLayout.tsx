@@ -45,7 +45,7 @@ export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
         </p>
       </div>
 
-      <div className="flex w-full flex-1 flex-col items-center justify-center px-6 py-16 lg:w-1/2">
+      <div className="flex w-full flex-1 flex-col items-center justify-center bg-gray-400 px-6 py-16 lg:w-1/2">
         <div className="w-full max-w-sm">
           <Link href="/" className="mb-8 flex items-center gap-2 lg:hidden">
             <span className="flex size-6 items-center justify-center rounded-sm bg-foreground text-xs font-bold text-background">
