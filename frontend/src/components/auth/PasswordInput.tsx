@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { authInputClassName } from "./input-styles";
 
 export interface PasswordInputProps {
   id: string;
@@ -27,10 +28,14 @@ export function PasswordInput({
 
   return (
     <div className="relative">
+      <Lock
+        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+        aria-hidden
+      />
       <input
         id={id}
         type={visible ? "text" : "password"}
-        className={cn(className, "pr-10")}
+        className={cn(authInputClassName, "pr-10", className)}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         disabled={disabled}

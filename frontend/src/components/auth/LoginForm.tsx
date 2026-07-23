@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IconInput } from "./IconInput";
 import { PasswordInput } from "./PasswordInput";
 
 export interface LoginFormValues {
@@ -14,9 +16,6 @@ export interface LoginFormProps {
   isSubmitting?: boolean;
   error?: string | null;
 }
-
-const inputClassName =
-  "w-full rounded-lg border border-border bg-background p-2.5 text-sm disabled:opacity-50";
 
 export function LoginForm({ onSubmit, isSubmitting = false, error = null }: LoginFormProps) {
   const [identifier, setIdentifier] = useState("");
@@ -42,10 +41,10 @@ export function LoginForm({ onSubmit, isSubmitting = false, error = null }: Logi
         <label htmlFor="login-identifier" className="text-sm font-medium">
           Username or email
         </label>
-        <input
+        <IconInput
           id="login-identifier"
           type="text"
-          className={inputClassName}
+          icon={User}
           value={identifier}
           onChange={(event) => setIdentifier(event.target.value)}
           disabled={isSubmitting}
@@ -60,7 +59,6 @@ export function LoginForm({ onSubmit, isSubmitting = false, error = null }: Logi
         <PasswordInput
           id="login-password"
           toggleLabel="password"
-          className={inputClassName}
           value={password}
           onChange={setPassword}
           disabled={isSubmitting}
@@ -68,7 +66,7 @@ export function LoginForm({ onSubmit, isSubmitting = false, error = null }: Logi
         />
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         Log In
       </Button>
     </form>

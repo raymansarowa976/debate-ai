@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Mail, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPasswordRequirements, getUsernameRequirements } from "@/lib/validation/auth";
+import { IconInput } from "./IconInput";
 import { PasswordInput } from "./PasswordInput";
 import { RequirementChecklist } from "./RequirementChecklist";
 
@@ -17,9 +19,6 @@ export interface RegisterFormProps {
   isSubmitting?: boolean;
   error?: string | null;
 }
-
-const inputClassName =
-  "w-full rounded-lg border border-border bg-background p-2.5 text-sm disabled:opacity-50";
 
 export function RegisterForm({
   onSubmit,
@@ -54,10 +53,10 @@ export function RegisterForm({
         <label htmlFor="register-username" className="text-sm font-medium">
           Username
         </label>
-        <input
+        <IconInput
           id="register-username"
           type="text"
-          className={inputClassName}
+          icon={User}
           value={username}
           onChange={(event) => setUsername(event.target.value)}
           disabled={isSubmitting}
@@ -73,10 +72,10 @@ export function RegisterForm({
         <label htmlFor="register-email" className="text-sm font-medium">
           Email
         </label>
-        <input
+        <IconInput
           id="register-email"
           type="email"
-          className={inputClassName}
+          icon={Mail}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           disabled={isSubmitting}
@@ -91,7 +90,6 @@ export function RegisterForm({
         <PasswordInput
           id="register-password"
           toggleLabel="password"
-          className={inputClassName}
           value={password}
           onChange={setPassword}
           disabled={isSubmitting}
@@ -110,7 +108,6 @@ export function RegisterForm({
         <PasswordInput
           id="register-confirm-password"
           toggleLabel="confirm password"
-          className={inputClassName}
           value={confirmPassword}
           onChange={setConfirmPassword}
           disabled={isSubmitting}
@@ -127,7 +124,7 @@ export function RegisterForm({
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         Create Account
       </Button>
     </form>
