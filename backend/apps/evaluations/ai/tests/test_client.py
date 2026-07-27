@@ -1,7 +1,14 @@
 from unittest.mock import MagicMock, patch
 
-from apps.evaluations.ai.client import FALLBACK_MESSAGE, generate_opponent_reply
+import pytest
+
+from apps.evaluations.ai.client import (
+    FALLBACK_MESSAGE,
+    generate_opponent_reply,
+    generate_scorecard_response,
+)
 from apps.evaluations.ai.context import ContextPayload
+from apps.evaluations.ai.prompts import JUDGE_SYSTEM_PROMPT
 
 
 def _payload():
@@ -74,3 +81,75 @@ def test_returns_fallback_message_when_the_call_fails(mock_openai_cls):
     reply = generate_opponent_reply("system prompt text", _payload())
 
     assert reply == FALLBACK_MESSAGE
+
+
+@patch("apps.evaluations.ai.client.OpenAI")
+def test_generate_scorecard_response_returns_the_raw_model_content(mock_openai_cls):
+    mock_client = MagicMock()
+    raw_content = (
+        '{"logic": 80, "evidence": 70, "rhetoric": 60, "adherence": 90, '
+        '"fallacies_detected": []}'
+    )
+    mock_client.chat.completions.create.return_value = _mock_response(raw_content)
+    mock_openai_cls.return_value = mock_client
+
+    result = generate_scorecard_response(_payload())
+
+    assert result == raw_content
+
+
+@patch("apps.evaluations.ai.client.OpenAI")
+def test_generate_scorecard_response_uses_the_judge_system_prompt(mock_openai_cls):
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.return_value = _mock_response("{}")
+    mock_openai_cls.return_value = mock_client
+
+    generate_scorecard_response(_payload())
+
+    _, kwargs = mock_client.chat.completions.create.call_args
+    assert kwargs["messages"][0] == {
+        "role": "system",
+        "content": JUDGE_SYSTEM_PROMPT,
+    }
+
+
+@patch("apps.evaluations.ai.client.OpenAI")
+def test_generate_scorecard_response_includes_context_in_the_user_message(
+    mock_openai_cls,
+):
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.return_value = _mock_response("{}")
+    mock_openai_cls.return_value = mock_client
+    payload = _payload()
+
+    generate_scorecard_response(payload)
+
+    _, kwargs = mock_client.chat.completions.create.call_args
+    assert payload.rolling_summary in kwargs["messages"][1]["content"]
+    assert payload.latest_statement in kwargs["messages"][1]["content"]
+
+
+@patch("apps.evaluations.ai.client.OpenAI")
+def test_generate_scorecard_response_sends_an_eight_second_timeout(mock_openai_cls):
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.return_value = _mock_response("{}")
+    mock_openai_cls.return_value = mock_client
+
+    generate_scorecard_response(_payload())
+
+    _, kwargs = mock_client.chat.completions.create.call_args
+    assert kwargs["timeout"] == 8
+
+
+@patch("apps.evaluations.ai.client.OpenAI")
+def test_generate_scorecard_response_propagates_errors_instead_of_falling_back(
+    mock_openai_cls,
+):
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.side_effect = TimeoutError(
+        "connection timed out"
+    )
+    mock_openai_cls.return_value = mock_client
+
+    with pytest.raises(TimeoutError):
+        generate_scorecard_response(_payload())
