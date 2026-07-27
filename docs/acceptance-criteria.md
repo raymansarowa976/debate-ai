@@ -106,17 +106,17 @@
 ### Issue 3.2: Implement Pydantic Evaluation Schema Validation & Retry Handlers
 *   **Description:** Build strict ingestion schemas for the AI judge's feedback data models alongside failure handling.
 *   **Acceptance Criteria:**
-    *   [ ] Establish a strict `Pydantic` schema class parsing four designated integer fields (`logic`, `evidence`, `rhetoric`, `adherence`) along with a structured dictionary list for `fallacies_detected`.
-    *   [ ] Implement an exponential back-off automated task retry system inside the Celery worker configuration block capped at 3 max attempts.
-    *   [ ] Ensure a clean database transactional update that shifts the match record to `COMPLETED` and appends the final valid scorecard JSON data upon processing.
+    *   [x] Establish a strict `Pydantic` schema class parsing four designated integer fields (`logic`, `evidence`, `rhetoric`, `adherence`) along with a structured dictionary list for `fallacies_detected`.
+    *   [x] Implement an exponential back-off automated task retry system inside the Celery worker configuration block capped at 3 max attempts.
+    *   [x] Ensure a clean database transactional update that shifts the match record to `COMPLETED` and appends the final valid scorecard JSON data upon processing.
 *   **Verification:** Covered by **Test 6 (Backend)**. Mock invalid JSON configurations and ensure error traps catch data errors and rerun the handler cleanly.
 
 ### Issue 3.3: Set Up Real-Time Grading Status Event Streaming
 *   **Description:** Connect Django Channels to stream ongoing grading status changes back to the client UI.
 *   **Acceptance Criteria:**
-    *   [ ] Create a Django Channels consumer bound to Redis Pub/Sub channels to catch background task compilation statuses.
-    *   [ ] Configure the Celery worker to push incremental events (`"JUDGE_START"`, `"LOGIC_EVALUATED"`, `"FINAL_COMPILATION"`) down to Redis as steps complete.
-    *   [ ] Implement a Client UI listener using Server-Sent Events (SSE) or WebSockets to parse incoming status streams and render descriptive message steps on screen.
+    *   [x] Create a Django Channels consumer bound to Redis Pub/Sub channels to catch background task compilation statuses.
+    *   [x] Configure the Celery worker to push incremental events (`"JUDGE_START"`, `"LOGIC_EVALUATED"`, `"FINAL_COMPILATION"`) down to Redis as steps complete.
+    *   [x] Implement a Client UI listener using Server-Sent Events (SSE) or WebSockets to parse incoming status streams and render descriptive message steps on screen.
 *   **Verification:** Covered by **Test 3 (Frontend)**. Verify live frontend UI rendering changes execute smoothly as progress signals are injected.
 
 ---
