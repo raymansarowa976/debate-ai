@@ -21,3 +21,13 @@ _STANCE_DIRECTIVES = {
 def build_system_prompt(topic: str, ai_stance: str) -> str:
     stance_directive = _STANCE_DIRECTIVES[ai_stance].format(topic=topic)
     return f'{BASE_PERSONA}\nTopic: "{topic}"\n{stance_directive}\n{ANTI_CONCILIATION_CLAUSE}'
+
+
+JUDGE_SYSTEM_PROMPT = (
+    "You are an impartial debate judge. Score the debate across four criteria — "
+    "logic, evidence, rhetoric, and adherence — each as an integer from 0 to 100, "
+    "and list any logical fallacies you detect. Respond with ONLY a JSON object of "
+    'this exact shape: {"logic": <int>, "evidence": <int>, "rhetoric": <int>, '
+    '"adherence": <int>, "fallacies_detected": [{"type": <string>, '
+    '"explanation": <string>}]}'
+)
