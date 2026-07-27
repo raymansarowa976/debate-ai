@@ -4,6 +4,7 @@ from django.conf import settings
 from openai import OpenAI
 
 from apps.evaluations.ai.context import ContextPayload
+from apps.evaluations.ai.prompts import JUDGE_SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,21 @@ def generate_opponent_reply(system_prompt: str, context_payload: ContextPayload)
             "Opponent LLM call failed; returning fallback message.", exc_info=True
         )
         return FALLBACK_MESSAGE
+
+    return response.choices[0].message.content
+
+
+def generate_scorecard_response(context_payload: ContextPayload) -> str:
+    messages = [
+        {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+        {"role": "user", "content": _compose_user_content(context_payload)},
+    ]
+
+    response = OpenAI(api_key=settings.OPENAI_API_KEY).chat.completions.create(
+        model=settings.OPENAI_MODEL,
+        timeout=settings.OPENAI_TIMEOUT_SECONDS,
+        messages=messages,
+    )
 
     return response.choices[0].message.content
 
