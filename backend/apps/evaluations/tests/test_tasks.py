@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
+from apps.evaluations.events import GradingEvent
 from apps.evaluations.models import Scorecard
 from apps.evaluations.tasks import ScorecardValidationError, evaluate_match_task
 from apps.matches.models import MatchStatus
@@ -13,6 +14,7 @@ pytestmark = pytest.mark.django_db
 # Patching at the defining module affects the single shared Celery Task instance,
 # mirroring the convention used for evaluate_match_task.delay in the matches tests.
 JUDGE_TARGET = "apps.evaluations.tasks.generate_scorecard_response"
+PUBLISH_TARGET = "apps.evaluations.tasks.publish_grading_event"
 
 
 def _valid_response():
@@ -109,6 +111,37 @@ def test_schema_violation_is_retried_and_eventually_fails_without_corrupting_the
     match.refresh_from_db()
     assert match.status == MatchStatus.EVALUATING
     assert not Scorecard.objects.filter(match=match).exists()
+
+
+def test_valid_scorecard_publishes_the_grading_steps_in_order():
+    match = _match_in_evaluating()
+
+    with patch(JUDGE_TARGET, return_value=_valid_response()), patch(
+        PUBLISH_TARGET
+    ) as mock_publish:
+        evaluate_match_task.apply(args=[str(match.id)])
+
+    assert [call.args[1] for call in mock_publish.call_args_list] == [
+        GradingEvent.JUDGE_START,
+        GradingEvent.LOGIC_EVALUATED,
+        GradingEvent.FINAL_COMPILATION,
+    ]
+    for call in mock_publish.call_args_list:
+        assert call.args[0] == str(match.id)
+
+
+def test_malformed_json_never_publishes_logic_evaluated_or_final_compilation():
+    match = _match_in_evaluating()
+
+    with patch(JUDGE_TARGET, return_value="{not valid json"), patch(
+        PUBLISH_TARGET
+    ) as mock_publish:
+        evaluate_match_task.apply(args=[str(match.id)])
+
+    published_events = [call.args[1] for call in mock_publish.call_args_list]
+    assert published_events.count(GradingEvent.JUDGE_START) == 4
+    assert GradingEvent.LOGIC_EVALUATED not in published_events
+    assert GradingEvent.FINAL_COMPILATION not in published_events
 
 
 def test_recovers_after_transient_invalid_json_followed_by_a_valid_response():
