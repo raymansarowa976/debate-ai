@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.urls import reverse
 
 pytestmark = pytest.mark.django_db
@@ -24,22 +25,24 @@ def registered_user(db):
     )
 
 
-def test_login_with_username_succeeds(api_client, registered_user):
+def test_login_with_username_sends_a_verification_email(api_client, registered_user):
     response = api_client.post(
         login_url(), {"identifier": "loginuser", "password": PASSWORD}
     )
 
     assert response.status_code == 200
-    assert response.data["username"] == "loginuser"
+    assert response.data["verification_required"] is True
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == ["loginuser@example.com"]
 
 
-def test_login_with_email_succeeds(api_client, registered_user):
+def test_login_with_email_sends_a_verification_email(api_client, registered_user):
     response = api_client.post(
         login_url(), {"identifier": "loginuser@example.com", "password": PASSWORD}
     )
 
     assert response.status_code == 200
-    assert response.data["username"] == "loginuser"
+    assert len(mail.outbox) == 1
 
 
 def test_login_with_email_is_case_insensitive(api_client, registered_user):
@@ -50,13 +53,12 @@ def test_login_with_email_is_case_insensitive(api_client, registered_user):
     assert response.status_code == 200
 
 
-def test_login_establishes_a_session(api_client, registered_user):
+def test_login_does_not_establish_a_session_until_verified(api_client, registered_user):
     api_client.post(login_url(), {"identifier": "loginuser", "password": PASSWORD})
 
     response = api_client.get(me_url())
 
-    assert response.status_code == 200
-    assert response.data["username"] == "loginuser"
+    assert response.status_code == 403
 
 
 def test_login_rejects_wrong_password(api_client, registered_user):
@@ -65,6 +67,16 @@ def test_login_rejects_wrong_password(api_client, registered_user):
     )
 
     assert response.status_code == 400
+
+
+def test_login_rejects_wrong_password_without_sending_an_email(
+    api_client, registered_user
+):
+    api_client.post(
+        login_url(), {"identifier": "loginuser", "password": "WrongPass1!"}
+    )
+
+    assert len(mail.outbox) == 0
 
 
 def test_login_rejects_unknown_identifier(api_client):
