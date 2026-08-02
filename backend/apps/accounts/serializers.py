@@ -3,6 +3,8 @@ import re
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 
+from .tokens import InvalidLoginToken, consume_login_verification_token
+
 User = get_user_model()
 
 
@@ -74,5 +76,17 @@ class LoginSerializer(serializers.Serializer):
         )
         if user is None:
             raise serializers.ValidationError("Invalid credentials.")
+        attrs["user"] = user
+        return attrs
+
+
+class VerifyLoginSerializer(serializers.Serializer):
+    token = serializers.CharField()
+
+    def validate(self, attrs):
+        try:
+            user = consume_login_verification_token(attrs["token"], User)
+        except InvalidLoginToken as exc:
+            raise serializers.ValidationError(str(exc)) from exc
         attrs["user"] = user
         return attrs
