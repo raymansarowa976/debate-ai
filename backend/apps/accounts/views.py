@@ -6,7 +6,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
+from .emails import send_login_verification_email
+from .serializers import (
+    LoginSerializer,
+    RegisterSerializer,
+    UserSerializer,
+    VerifyLoginSerializer,
+)
+from .tokens import generate_login_verification_token
 
 
 class RegisterView(generics.CreateAPIView):
@@ -28,6 +35,24 @@ class LoginView(APIView):
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token = generate_login_verification_token(user)
+        send_login_verification_email(user, token)
+        return Response(
+            {
+                "verification_required": True,
+                "detail": "Check your email to confirm this login.",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class VerifyLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = VerifyLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         login(request, user)
