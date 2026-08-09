@@ -3,9 +3,31 @@ import re
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 
-from .tokens import InvalidLoginToken, consume_login_verification_token
+from .tokens import (
+    InvalidLoginToken,
+    InvalidPasswordResetToken,
+    consume_login_verification_token,
+    consume_password_reset_token,
+)
 
 User = get_user_model()
+
+
+def validate_password_strength(value):
+    errors = []
+    if len(value) < 8:
+        errors.append("Password must be at least 8 characters.")
+    if not re.search(r"[a-z]", value):
+        errors.append("Password must contain a lowercase letter.")
+    if not re.search(r"[A-Z]", value):
+        errors.append("Password must contain an uppercase letter.")
+    if not re.search(r"[0-9]", value):
+        errors.append("Password must contain a number.")
+    if not re.search(r"[^A-Za-z0-9]", value):
+        errors.append("Password must contain a special character.")
+    if errors:
+        raise serializers.ValidationError(errors)
+    return value
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -41,20 +63,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate_password(self, value):
-        errors = []
-        if len(value) < 8:
-            errors.append("Password must be at least 8 characters.")
-        if not re.search(r"[a-z]", value):
-            errors.append("Password must contain a lowercase letter.")
-        if not re.search(r"[A-Z]", value):
-            errors.append("Password must contain an uppercase letter.")
-        if not re.search(r"[0-9]", value):
-            errors.append("Password must contain a number.")
-        if not re.search(r"[^A-Za-z0-9]", value):
-            errors.append("Password must contain a special character.")
-        if errors:
-            raise serializers.ValidationError(errors)
-        return value
+        return validate_password_strength(value)
 
     def create(self, validated_data):
         return User.objects.create_user(
@@ -87,6 +96,26 @@ class VerifyLoginSerializer(serializers.Serializer):
         try:
             user = consume_login_verification_token(attrs["token"], User)
         except InvalidLoginToken as exc:
+            raise serializers.ValidationError(str(exc)) from exc
+        attrs["user"] = user
+        return attrs
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate_password(self, value):
+        return validate_password_strength(value)
+
+    def validate(self, attrs):
+        try:
+            user = consume_password_reset_token(attrs["token"], User)
+        except InvalidPasswordResetToken as exc:
             raise serializers.ValidationError(str(exc)) from exc
         attrs["user"] = user
         return attrs
