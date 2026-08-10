@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IconInput } from "./IconInput";
@@ -64,6 +65,14 @@ export function LoginForm({ onSubmit, isSubmitting = false, error = null }: Logi
           disabled={isSubmitting}
           autoComplete="current-password"
         />
+        <div className="text-right">
+          <Link
+            href="/forgot-password"
+            className="text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            Forgot password?
+          </Link>
+        </div>
       </div>
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
