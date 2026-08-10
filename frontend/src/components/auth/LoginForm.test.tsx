@@ -52,6 +52,15 @@ describe("LoginForm", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Invalid credentials.");
   });
 
+  it("renders a link to the forgot-password page", () => {
+    render(<LoginForm onSubmit={vi.fn()} />);
+
+    expect(screen.getByRole("link", { name: /forgot password/i })).toHaveAttribute(
+      "href",
+      "/forgot-password"
+    );
+  });
+
   it("does not render an error message when error is absent", () => {
     render(<LoginForm onSubmit={vi.fn()} />);
 

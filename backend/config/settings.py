@@ -124,6 +124,9 @@ REST_FRAMEWORK = {
 # --- Auth: login email verification ---
 JWT_SECRET_KEY = env("JWT_SECRET_KEY", default=SECRET_KEY)
 LOGIN_TOKEN_TTL_SECONDS = env.int("LOGIN_TOKEN_TTL_SECONDS", default=900)
+PASSWORD_RESET_TOKEN_TTL_SECONDS = env.int(
+    "PASSWORD_RESET_TOKEN_TTL_SECONDS", default=900
+)
 FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
 
 # --- Email ---

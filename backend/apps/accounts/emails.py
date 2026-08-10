@@ -14,3 +14,21 @@ def send_login_verification_email(user, token):
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
     )
+
+
+def send_password_reset_email(user, token):
+    # Includes the username as a reminder since this covers "forgot
+    # username" too: the account lookup is by email, so the user gets
+    # both pieces of information in one message.
+    reset_link = f"{settings.FRONTEND_URL}/reset-password?token={token}"
+    send_mail(
+        subject="Reset your password",
+        message=(
+            "We received a request to reset the password for your account.\n\n"
+            f"Your username is: {user.username}\n\n"
+            f"Reset your password: {reset_link}\n\n"
+            "If you didn't request this, you can ignore this email."
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )
