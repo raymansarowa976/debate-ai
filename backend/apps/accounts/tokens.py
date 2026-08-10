@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 
 LOGIN_VERIFICATION_PURPOSE = "login_verification"
-PASSWORD_RESET_PURPOSE = "password_reset"
+PASSWORD_RESET_PURPOSE = "password_reset"  # nosec B105 - token purpose label, not a credential
 
 
 class InvalidLoginToken(Exception):
