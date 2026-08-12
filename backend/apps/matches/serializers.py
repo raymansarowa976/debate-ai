@@ -68,3 +68,48 @@ class MatchDetailSerializer(serializers.ModelSerializer):
             "updated_at",
             "rounds",
         ]
+
+
+class MatchShareSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = ["share_slug"]
+        read_only_fields = ["share_slug"]
+
+
+class PublicMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ["sender", "content", "created_at"]
+
+
+class PublicRoundSerializer(serializers.ModelSerializer):
+    messages = PublicMessageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Round
+        fields = ["round_number", "messages"]
+
+
+class PublicMatchDetailSerializer(serializers.ModelSerializer):
+    """Sanitized view for unauthenticated public access.
+
+    Deliberately excludes the owning user, the match's internal (UUID)
+    id, and any auto-incrementing round/message ids so a shared link
+    cannot be used to identify or enumerate accounts or records.
+    """
+
+    rounds = PublicRoundSerializer(many=True, read_only=True)
+    ai_stance = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Match
+        fields = [
+            "share_slug",
+            "topic",
+            "user_stance",
+            "ai_stance",
+            "status",
+            "created_at",
+            "rounds",
+        ]
