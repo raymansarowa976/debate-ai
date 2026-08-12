@@ -126,9 +126,9 @@
 ### Issue 4.1: Build Secure Public Routing and Privacy Sanitization
 *   **Description:** Allow users to share debate outcomes through randomized, non-enumerable cryptographic hashes while wiping user profiles for security.
 *   **Acceptance Criteria:**
-    *   [ ] Configure a cryptographic hash slug router utility (e.g., changing paths from `/debates/1` to `/debates/mj8-q2p-x9k`).
-    *   [ ] Ensure all default matches are securely initialized as private, isolated via active authentication guards.
-    *   [ ] Build specific data optimization database queries for the public access page that entirely exclude user email addresses, sequential IDs, or profile metrics.
+    *   [x] Configure a cryptographic hash slug router utility (e.g., changing paths from `/debates/1` to `/debates/mj8-q2p-x9k`).
+    *   [x] Ensure all default matches are securely initialized as private, isolated via active authentication guards.
+    *   [x] Build specific data optimization database queries for the public access page that entirely exclude user email addresses, sequential IDs, or profile metrics.
 *   **Verification:** Covered by **Test 7 (Backend)**. Assert unauthenticated user lookups pull clean, unidentifiable timeline information securely.
 
 ### Issue 4.2: Implement Server-Side Dynamic OpenGraph Meta-Tag Injection
