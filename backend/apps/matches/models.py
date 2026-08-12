@@ -38,6 +38,12 @@ class Match(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Public sharing: matches are private by default. A match only becomes
+    # publicly viewable once the owner explicitly shares it, at which point
+    # it gets a random, non-enumerable slug decoupled from its internal id.
+    is_public = models.BooleanField(default=False)
+    share_slug = models.CharField(max_length=11, unique=True, null=True, blank=True)
+
     class Meta:
         ordering = ["-created_at"]
         indexes = [models.Index(fields=["user", "status"])]

@@ -121,6 +121,25 @@ REST_FRAMEWORK = {
     ],
 }
 
+# --- Auth: login email verification ---
+JWT_SECRET_KEY = env("JWT_SECRET_KEY", default=SECRET_KEY)
+LOGIN_TOKEN_TTL_SECONDS = env.int("LOGIN_TOKEN_TTL_SECONDS", default=900)
+PASSWORD_RESET_TOKEN_TTL_SECONDS = env.int(
+    "PASSWORD_RESET_TOKEN_TTL_SECONDS", default=900
+)
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
+
+# --- Email ---
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_HOST = env("EMAIL_HOST", default="")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@debateai.local")
+
 # --- AI providers ---
 OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")

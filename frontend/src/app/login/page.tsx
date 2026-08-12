@@ -3,22 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { loginUser } from "@/lib/api/auth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 
   const { mutate: submitLogin, isPending } = useMutation({
     mutationFn: loginUser,
     onMutate: () => setError(null),
-    onSuccess: (user) => {
-      queryClient.setQueryData(["currentUser"], user);
-      router.push("/");
+    onSuccess: () => {
+      router.push("/login/check-email");
     },
     onError: (mutationError: Error) => setError(mutationError.message),
   });
