@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from apps.evaluations.ai.client import generate_scorecard_response
 from apps.evaluations.ai.context import build_context_payload
 from apps.evaluations.ai.schemas import ScorecardSchema
+from apps.evaluations.events import GradingEvent, publish_grading_event
 from apps.evaluations.models import Scorecard
 from apps.matches.models import Match, MatchStatus
 
@@ -25,6 +26,8 @@ class ScorecardValidationError(Exception):
     max_retries=3,
 )
 def evaluate_match_task(self, match_id):
+    publish_grading_event(match_id, GradingEvent.JUDGE_START)
+
     match = Match.objects.get(id=match_id)
     context_payload = build_context_payload(match)
     raw_response = generate_scorecard_response(context_payload)
@@ -38,6 +41,8 @@ def evaluate_match_task(self, match_id):
             exc_info=True,
         )
         raise ScorecardValidationError(str(exc)) from exc
+
+    publish_grading_event(match_id, GradingEvent.LOGIC_EVALUATED)
 
     with transaction.atomic():
         Scorecard.objects.update_or_create(
@@ -55,3 +60,5 @@ def evaluate_match_task(self, match_id):
         )
         match.status = MatchStatus.COMPLETED
         match.save(update_fields=["status", "updated_at"])
+
+    publish_grading_event(match_id, GradingEvent.FINAL_COMPILATION)
