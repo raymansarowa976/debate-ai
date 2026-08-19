@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArgumentBubblesBackground } from "@/components/auth/AuthBackground";
 import { MatchSetupForm } from "@/components/debate/MatchSetupForm";
 import { NavAuthActions } from "@/components/marketing/NavAuthActions";
 import type { CurrentUser } from "@/lib/api/auth";
@@ -34,18 +35,22 @@ export function StartDebateOverview({
         <NavAuthActions user={user} onLogout={onLogout} isLoggingOut={isLoggingOut} />
       </header>
 
-      <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-6 py-12">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          [New Match]
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">Start a Debate</h1>
-        <p className="mt-2 text-muted-foreground">
-          Pick a topic and the side you want to argue. The AI will take the
-          opposite stance.
-        </p>
+      <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-neutral-200 px-6 py-12 dark:bg-neutral-900">
+        <ArgumentBubblesBackground />
 
-        <div className="mt-8 rounded-2xl border border-border bg-card p-8 shadow-sm">
-          <MatchSetupForm onSubmit={onSubmit} isSubmitting={isSubmitting} error={error} />
+        <div className="relative z-10 mx-auto w-full max-w-lg">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            [New Match]
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Start a Debate</h1>
+          <p className="mt-2 text-muted-foreground">
+            Pick a topic and the side you want to argue. The AI will take the
+            opposite stance.
+          </p>
+
+          <div className="mt-8 rounded-2xl border border-border bg-card p-8 shadow-sm">
+            <MatchSetupForm onSubmit={onSubmit} isSubmitting={isSubmitting} error={error} />
+          </div>
         </div>
       </main>
     </div>
