@@ -7,6 +7,16 @@ export type MatchStatus =
   | "EVALUATING"
   | "COMPLETED";
 
+export type Stance = "FOR" | "AGAINST";
+
+export interface MatchSummary {
+  id: string;
+  topic: string;
+  user_stance: Stance;
+  status: MatchStatus;
+  created_at: string;
+}
+
 export interface MessageDTO {
   id: number;
   sender: "USER" | "AI";
@@ -27,6 +37,23 @@ export interface MatchDetail {
   created_at: string;
   updated_at: string;
   rounds: RoundDTO[];
+}
+
+export async function createMatch(topic: string, userStance: Stance): Promise<MatchSummary> {
+  const res = await fetch(`/api/matches/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...csrfHeaders(),
+    },
+    credentials: "include",
+    body: JSON.stringify({ topic, user_stance: userStance }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail ?? body.topic?.[0] ?? `Failed to create match (${res.status})`);
+  }
+  return res.json();
 }
 
 export async function fetchMatch(matchId: string): Promise<MatchDetail> {

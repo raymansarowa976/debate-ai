@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { fetchCurrentUser, logoutUser } from "@/lib/api/auth";
 
 export default function DashboardPage() {
@@ -35,28 +34,6 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 px-6 py-16 lg:px-16">
-      <div>
-        <p className="text-sm text-muted-foreground">Welcome back,</p>
-        <h1 className="text-3xl font-semibold tracking-tight">{user.username}</h1>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <Button size="lg" className="rounded-full px-6">
-          Start a Debate
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="rounded-full px-6"
-          onClick={() => logOut()}
-          disabled={isLoggingOut}
-        >
-          <LogOut />
-          Log Out
-        </Button>
-      </div>
-    </main>
+    <DashboardOverview user={user} onLogout={() => logOut()} isLoggingOut={isLoggingOut} />
   );
 }

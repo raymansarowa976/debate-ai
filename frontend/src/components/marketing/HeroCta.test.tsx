@@ -20,18 +20,21 @@ describe("HeroCta", () => {
     );
   });
 
-  it("does not render the Start a Debate button when signed out", () => {
+  it("does not render the Start a Debate link when signed out", () => {
     render(<HeroCta user={null} />);
 
     expect(
-      screen.queryByRole("button", { name: /start a debate/i })
+      screen.queryByRole("link", { name: /start a debate/i })
     ).not.toBeInTheDocument();
   });
 
-  it("renders the Start a Debate button when signed in", () => {
+  it("renders the Start a Debate link when signed in", () => {
     render(<HeroCta user={loggedInUser} />);
 
-    expect(screen.getByRole("button", { name: /start a debate/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /start a debate/i })).toHaveAttribute(
+      "href",
+      "/matches/new"
+    );
   });
 
   it("does not render the Sign Up link when signed in", () => {

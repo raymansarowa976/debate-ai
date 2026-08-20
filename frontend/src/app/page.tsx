@@ -1,6 +1,7 @@
 import { NavBar } from "@/components/marketing/NavBar";
 import { HeroActions } from "@/components/marketing/HeroActions";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
+import { HowItWorksSection } from "@/components/marketing/HowItWorksSection";
 
 export default function Home() {
   return (
@@ -28,34 +29,7 @@ export default function Home() {
         <HeroVisual />
       </section>
 
-      <section id="how-it-works" className="border-t border-border">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-6 py-16 lg:grid-cols-3 lg:px-16 lg:py-24">
-          <div>
-            <span className="text-sm font-medium text-muted-foreground">01</span>
-            <h3 className="mt-2 text-xl font-semibold">State your case</h3>
-            <p className="mt-2 text-muted-foreground">
-              Pick a topic and open with your strongest argument, within a
-              structured word count.
-            </p>
-          </div>
-          <div>
-            <span className="text-sm font-medium text-muted-foreground">02</span>
-            <h3 className="mt-2 text-xl font-semibold">AI responds</h3>
-            <p className="mt-2 text-muted-foreground">
-              Your opponent holds its stance and pushes back, round after
-              round.
-            </p>
-          </div>
-          <div>
-            <span className="text-sm font-medium text-muted-foreground">03</span>
-            <h3 className="mt-2 text-xl font-semibold">Independent judge scores it</h3>
-            <p className="mt-2 text-muted-foreground">
-              A separate AI judge grades logic, evidence, rhetoric, and
-              adherence — then declares a winner.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HowItWorksSection />
     </div>
   );
 }
