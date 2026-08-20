@@ -7,7 +7,6 @@ import type { MatchStatus } from "@/lib/api/matches";
 
 export interface DebatePanelProps {
   status: MatchStatus;
-  topic: string;
   onSubmitArgument: (text: string) => void;
   isSubmitting?: boolean;
   error?: string | null;
@@ -15,7 +14,6 @@ export interface DebatePanelProps {
 
 export function DebatePanel({
   status,
-  topic,
   onSubmitArgument,
   isSubmitting = false,
   error = null,
@@ -32,8 +30,6 @@ export function DebatePanel({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">{topic}</h2>
-
       {locked && (
         <div
           data-testid="ai-turn-skeleton"
@@ -59,13 +55,13 @@ export function DebatePanel({
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <textarea
-          className="min-h-32 w-full rounded-lg border border-border bg-background p-3 text-sm disabled:opacity-50"
+          className="min-h-32 w-full rounded-lg border border-border bg-background p-3 text-sm shadow-sm transition-colors placeholder:text-muted-foreground/50 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
           value={value}
           onChange={(event) => setValue(event.target.value)}
           disabled={disabled}
           placeholder="Make your argument (50-500 words)..."
         />
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" size="lg" className="w-full" disabled={disabled}>
           Submit Argument
         </Button>
       </form>

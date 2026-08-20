@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DebatePanel } from "@/components/debate/DebatePanel";
+import { MatchOverview } from "@/components/debate/MatchOverview";
+import { fetchCurrentUser, logoutUser } from "@/lib/api/auth";
 import { fetchMatch, postArgument } from "@/lib/api/matches";
+import { useGradingEvents } from "@/lib/ws/useGradingEvents";
 
 export default function MatchPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+
+  const { data: user } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: fetchCurrentUser,
+  });
 
   const { data: match, isLoading, isError } = useQuery({
     queryKey: ["match", id],
     queryFn: () => fetchMatch(id),
+  });
+
+  const { mutate: logOut, isPending: isLoggingOut } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      queryClient.setQueryData(["currentUser"], null);
+      router.push("/");
+    },
   });
 
   const { mutate: submitArgument, isPending } = useMutation({
@@ -32,6 +48,15 @@ export default function MatchPage() {
     },
   });
 
+  const isEvaluating = match?.status === "EVALUATING";
+  const gradingEvents = useGradingEvents(id, isEvaluating);
+
+  useEffect(() => {
+    if (gradingEvents.includes("FINAL_COMPILATION")) {
+      queryClient.invalidateQueries({ queryKey: ["match", id] });
+    }
+  }, [gradingEvents, queryClient, id]);
+
   if (isLoading) {
     return <main className="flex flex-1 items-center justify-center">Loading…</main>;
   }
@@ -45,14 +70,16 @@ export default function MatchPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
-      <DebatePanel
-        status={match.status}
-        topic={match.topic}
-        onSubmitArgument={submitArgument}
-        isSubmitting={isPending}
-        error={error}
-      />
-    </main>
+    <MatchOverview
+      user={user}
+      topic={match.topic}
+      status={match.status}
+      gradingEvents={gradingEvents}
+      onSubmitArgument={submitArgument}
+      isSubmitting={isPending}
+      error={error}
+      onLogout={() => logOut()}
+      isLoggingOut={isLoggingOut}
+    />
   );
 }
