@@ -33,8 +33,8 @@ export function NavAuthActions({
 
   return (
     <div className="flex items-center gap-2">
-      <Button size="default" className="rounded-full px-5">
-        Start a Debate
+      <Button size="default" className="rounded-full px-5" asChild>
+        <Link href="/matches/new">Start a Debate</Link>
       </Button>
       <Button
         type="button"
