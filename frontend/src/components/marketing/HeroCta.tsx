@@ -20,8 +20,8 @@ export function HeroCta({ user }: HeroCtaProps) {
   }
 
   return (
-    <Button size="lg" className="rounded-full px-6">
-      Start a Debate
+    <Button size="lg" className="rounded-full px-6" asChild>
+      <Link href="/matches/new">Start a Debate</Link>
     </Button>
   );
 }
