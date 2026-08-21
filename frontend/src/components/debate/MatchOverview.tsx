@@ -2,16 +2,17 @@ import Link from "next/link";
 import { DebateClashBackground } from "@/components/auth/AuthBackground";
 import { DebatePanel } from "@/components/debate/DebatePanel";
 import { GradingProgress } from "@/components/debate/GradingProgress";
+import { Transcript } from "@/components/debate/Transcript";
 import { NavAuthActions } from "@/components/marketing/NavAuthActions";
 import type { CurrentUser } from "@/lib/api/auth";
-import type { MatchStatus } from "@/lib/api/matches";
+import type { MatchStatus, RoundDTO } from "@/lib/api/matches";
 import type { GradingEventName } from "@/lib/ws/gradingEvents";
-import { cn } from "@/lib/utils";
 
 export interface MatchOverviewProps {
   user: CurrentUser | null | undefined;
   topic: string;
   status: MatchStatus;
+  rounds?: RoundDTO[];
   gradingEvents: GradingEventName[];
   onSubmitArgument: (text: string) => void;
   isSubmitting?: boolean;
@@ -32,6 +33,7 @@ export function MatchOverview({
   user,
   topic,
   status,
+  rounds = [],
   gradingEvents,
   onSubmitArgument,
   isSubmitting = false,
@@ -64,12 +66,8 @@ export function MatchOverview({
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">{topic}</h1>
           <p className="mt-2 text-muted-foreground">{STATUS_SUBTITLES[status]}</p>
 
-          <div
-            className={cn(
-              "mt-8 rounded-2xl border border-border bg-card p-8 shadow-sm",
-              isEvaluating && "space-y-6"
-            )}
-          >
+          <div className="mt-8 space-y-6 rounded-2xl border border-border bg-card p-8 shadow-sm">
+            <Transcript rounds={rounds} aiTurnPending={status === "AI_TURN"} />
             {isEvaluating && <GradingProgress events={gradingEvents} />}
             <DebatePanel
               status={status}

@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from apps.evaluations.tasks import evaluate_match_task
 
 from .models import OPEN_FOR_USER_TURN_STATUSES, Match, MatchStatus, Round, SenderType
+from .tasks import generate_ai_turn_task
 from .serializers import (
     MatchCreateSerializer,
     MatchDetailSerializer,
@@ -87,6 +88,7 @@ class MessageCreateView(generics.CreateAPIView):
             serializer.save(round=round_obj, match=match, sender=SenderType.USER)
             match.status = MatchStatus.AI_TURN
             match.save(update_fields=["status", "updated_at"])
+        generate_ai_turn_task.delay(str(match.id), round_obj.id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

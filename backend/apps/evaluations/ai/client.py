@@ -1,10 +1,11 @@
 import logging
 
+import anthropic
 from django.conf import settings
-from openai import OpenAI
 
 from apps.evaluations.ai.context import ContextPayload
 from apps.evaluations.ai.prompts import JUDGE_SYSTEM_PROMPT
+from apps.evaluations.ai.schemas import ScorecardSchema
 
 logger = logging.getLogger(__name__)
 
@@ -12,18 +13,25 @@ FALLBACK_MESSAGE = (
     "The opponent could not be reached in time. Please continue to the next round."
 )
 
+REPLY_MAX_TOKENS = 1024
+SCORECARD_MAX_TOKENS = 1024
+
+
+def _client() -> anthropic.Anthropic:
+    return anthropic.Anthropic(
+        api_key=settings.ANTHROPIC_API_KEY, timeout=settings.AI_TIMEOUT_SECONDS
+    )
+
 
 def generate_opponent_reply(system_prompt: str, context_payload: ContextPayload) -> str:
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": _compose_user_content(context_payload)},
-    ]
-
     try:
-        response = OpenAI(api_key=settings.OPENAI_API_KEY).chat.completions.create(
-            model=settings.OPENAI_MODEL,
-            timeout=settings.OPENAI_TIMEOUT_SECONDS,
-            messages=messages,
+        response = _client().messages.create(
+            model=settings.ANTHROPIC_MODEL,
+            max_tokens=REPLY_MAX_TOKENS,
+            system=system_prompt,
+            messages=[
+                {"role": "user", "content": _compose_user_content(context_payload)}
+            ],
         )
     except Exception:
         logger.warning(
@@ -31,22 +39,19 @@ def generate_opponent_reply(system_prompt: str, context_payload: ContextPayload)
         )
         return FALLBACK_MESSAGE
 
-    return response.choices[0].message.content
+    return next(block.text for block in response.content if block.type == "text")
 
 
 def generate_scorecard_response(context_payload: ContextPayload) -> str:
-    messages = [
-        {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
-        {"role": "user", "content": _compose_user_content(context_payload)},
-    ]
-
-    response = OpenAI(api_key=settings.OPENAI_API_KEY).chat.completions.create(
-        model=settings.OPENAI_MODEL,
-        timeout=settings.OPENAI_TIMEOUT_SECONDS,
-        messages=messages,
+    response = _client().messages.parse(
+        model=settings.ANTHROPIC_MODEL,
+        max_tokens=SCORECARD_MAX_TOKENS,
+        system=JUDGE_SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": _compose_user_content(context_payload)}],
+        output_format=ScorecardSchema,
     )
 
-    return response.choices[0].message.content
+    return response.parsed_output.model_dump_json()
 
 
 def _compose_user_content(context_payload: ContextPayload) -> str:

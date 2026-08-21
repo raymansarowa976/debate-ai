@@ -1,5 +1,15 @@
 import { csrfHeaders } from "./csrf";
 
+async function parseErrorDetail(res: Response, fallback: string): Promise<string> {
+  const body = await res.json().catch(() => ({}));
+  if (typeof body.detail === "string") return body.detail;
+  const firstFieldError = Object.values(body).find(
+    (value): value is string[] => Array.isArray(value) && typeof value[0] === "string"
+  );
+  if (firstFieldError) return firstFieldError[0];
+  return fallback;
+}
+
 export type MatchStatus =
   | "INITIALIZED"
   | "USER_TURN"
@@ -50,8 +60,7 @@ export async function createMatch(topic: string, userStance: Stance): Promise<Ma
     body: JSON.stringify({ topic, user_stance: userStance }),
   });
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail ?? body.topic?.[0] ?? `Failed to create match (${res.status})`);
+    throw new Error(await parseErrorDetail(res, `Failed to create match (${res.status})`));
   }
   return res.json();
 }
@@ -73,8 +82,7 @@ export async function postArgument(matchId: string, content: string): Promise<Me
     body: JSON.stringify({ content }),
   });
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail ?? `Failed to submit argument (${res.status})`);
+    throw new Error(await parseErrorDetail(res, `Failed to submit argument (${res.status})`));
   }
   return res.json();
 }
