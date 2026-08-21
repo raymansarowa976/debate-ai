@@ -118,6 +118,52 @@ describe("MatchOverview", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Topic must not be empty.");
   });
 
+  it("renders the transcript when rounds are provided", () => {
+    render(
+      <MatchOverview
+        user={loggedInUser}
+        topic="Should AI write laws?"
+        status="USER_TURN"
+        rounds={[
+          {
+            id: 1,
+            round_number: 1,
+            messages: [
+              { id: 1, sender: "USER", content: "My opening argument", created_at: "now" },
+            ],
+          },
+        ]}
+        gradingEvents={[]}
+        onSubmitArgument={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText("My opening argument")).toBeInTheDocument();
+  });
+
+  it("shows the AI thinking indicator in the transcript while status is AI_TURN", () => {
+    render(
+      <MatchOverview
+        user={loggedInUser}
+        topic="Should AI write laws?"
+        status="AI_TURN"
+        rounds={[
+          {
+            id: 1,
+            round_number: 1,
+            messages: [
+              { id: 1, sender: "USER", content: "My opening argument", created_at: "now" },
+            ],
+          },
+        ]}
+        gradingEvents={[]}
+        onSubmitArgument={vi.fn()}
+      />
+    );
+
+    expect(screen.getByTestId("ai-thinking-indicator")).toBeInTheDocument();
+  });
+
   it("renders Sign Up and Sign In links when signed out", () => {
     render(
       <MatchOverview
