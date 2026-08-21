@@ -141,7 +141,6 @@ EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="noreply@debateai.local")
 
 # --- AI providers ---
-OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default="")
-OPENAI_MODEL = env("OPENAI_MODEL", default="gpt-4o-mini")
-OPENAI_TIMEOUT_SECONDS = 8
+ANTHROPIC_MODEL = env("ANTHROPIC_MODEL", default="claude-haiku-4-5")
+AI_TIMEOUT_SECONDS = 8
