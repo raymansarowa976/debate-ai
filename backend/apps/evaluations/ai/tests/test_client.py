@@ -35,7 +35,9 @@ def _scorecard():
         evidence=70,
         rhetoric=60,
         adherence=90,
-        fallacies_detected=[FallacyDetail(type="strawman", explanation="Misrepresented the claim.")],
+        fallacies_detected=[
+            FallacyDetail(type="strawman", explanation="Misrepresented the claim.")
+        ],
     )
 
 
