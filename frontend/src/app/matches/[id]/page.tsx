@@ -74,6 +74,7 @@ export default function MatchPage() {
       user={user}
       topic={match.topic}
       status={match.status}
+      rounds={match.rounds}
       gradingEvents={gradingEvents}
       onSubmitArgument={submitArgument}
       isSubmitting={isPending}
