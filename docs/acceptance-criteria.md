@@ -134,7 +134,7 @@
 ### Issue 4.2: Implement Server-Side Dynamic OpenGraph Meta-Tag Injection
 *   **Description:** Configure server-side header meta rendering for rich links when links are shared out across social pipelines.
 *   **Acceptance Criteria:**
-    *   [ ] Build an asynchronous server-side function within Next.js to intercept public hash slug routing requests.
-    *   [ ] Query the match metadata dataset directly prior to final client markup delivery.
-    *   [ ] Inject custom HTML `<meta>` properties (OpenGraph and Twitter Card targets) dynamically compiling the specific match scores inside the title and snippet block descriptions.
+    *   [x] Build an asynchronous server-side function within Next.js to intercept public hash slug routing requests.
+    *   [x] Query the match metadata dataset directly prior to final client markup delivery.
+    *   [x] Inject custom HTML `<meta>` properties (OpenGraph and Twitter Card targets) dynamically compiling the specific match scores inside the title and snippet block descriptions.
 *   **Verification:** Execute local curl tests against public debate share pages and inspect head tags to confirm strings match scorecard evaluations perfectly.
