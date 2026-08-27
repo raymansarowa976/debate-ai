@@ -67,6 +67,7 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
+    restart: on-failure
     ports:
       - "80:80"
     volumes:
