@@ -16,6 +16,20 @@ def send_login_verification_email(user, token):
     )
 
 
+def send_registration_verification_email(user, token):
+    verify_link = f"{settings.FRONTEND_URL}/verify-login?token={token}"
+    send_mail(
+        subject="Confirm your account",
+        message=(
+            "Welcome! Confirm your email to finish creating your account.\n\n"
+            f"Confirm it's you: {verify_link}\n\n"
+            "If you didn't create this account, you can ignore this email."
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )
+
+
 def send_password_reset_email(user, token):
     # Includes the username as a reminder since this covers "forgot
     # username" too: the account lookup is by email, so the user gets
