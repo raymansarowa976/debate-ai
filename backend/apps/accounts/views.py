@@ -6,7 +6,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .emails import send_login_verification_email, send_password_reset_email
+from .emails import (
+    send_login_verification_email,
+    send_password_reset_email,
+    send_registration_verification_email,
+)
 from .serializers import (
     ForgotPasswordSerializer,
     LoginSerializer,
@@ -28,9 +32,14 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        login(request, user)
+        token = generate_login_verification_token(user)
+        send_registration_verification_email(user, token)
         return Response(
-            UserSerializer(user).data, status=status.HTTP_201_CREATED
+            {
+                "verification_required": True,
+                "detail": "Check your email to confirm your account.",
+            },
+            status=status.HTTP_201_CREATED,
         )
 
 

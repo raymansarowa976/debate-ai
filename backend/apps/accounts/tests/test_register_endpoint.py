@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.urls import reverse
 
 from apps.matches.tests.factories import UserFactory
@@ -52,13 +53,20 @@ def test_register_hashes_the_password(api_client):
     assert user.check_password(VALID_PASSWORD)
 
 
-def test_register_logs_the_user_in(api_client):
+def test_register_does_not_establish_a_session_until_verified(api_client):
     api_client.post(register_url(), valid_payload())
 
     response = api_client.get(me_url())
 
-    assert response.status_code == 200
-    assert response.data["username"] == "newuser"
+    assert response.status_code == 403
+
+
+def test_register_sends_a_verification_email(api_client):
+    response = api_client.post(register_url(), valid_payload())
+
+    assert response.data["verification_required"] is True
+    assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == ["newuser@example.com"]
 
 
 def test_register_requires_username(api_client):

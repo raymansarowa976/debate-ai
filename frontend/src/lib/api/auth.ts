@@ -16,11 +16,16 @@ async function parseErrorDetail(res: Response, fallback: string): Promise<string
   return fallback;
 }
 
+export interface LoginResult {
+  verification_required: boolean;
+  detail: string;
+}
+
 export async function registerUser(values: {
   username: string;
   email: string;
   password: string;
-}): Promise<CurrentUser> {
+}): Promise<LoginResult> {
   const res = await fetch("/api/auth/register/", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...csrfHeaders() },
@@ -31,11 +36,6 @@ export async function registerUser(values: {
     throw new Error(await parseErrorDetail(res, `Registration failed (${res.status})`));
   }
   return res.json();
-}
-
-export interface LoginResult {
-  verification_required: boolean;
-  detail: string;
 }
 
 export async function loginUser(values: {
