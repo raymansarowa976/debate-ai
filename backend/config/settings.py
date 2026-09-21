@@ -12,6 +12,14 @@ environ.Env.read_env(BASE_DIR / ".env")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
+# Behind a reverse proxy (nginx), the proxy terminates TLS and forwards
+# plain HTTP with X-Forwarded-Proto set. Without this, request.is_secure()
+# is always False, which makes Django's CSRF Origin check think every
+# request is http:// while the browser's Origin header says https://,
+# rejecting every POST with "CSRF Failed: Origin checking failed".
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
